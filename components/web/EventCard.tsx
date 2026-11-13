@@ -21,11 +21,22 @@ interface EventCardProps {
 export function EventCard({ event, className = "" }: EventCardProps) {
   return (
     <article
-      className={`group relative flex flex-col w-full sm:w-[282px] h-[265px] rounded-2xl bg-[#FDFFF0] border border-[#B4BFCA] overflow-hidden shadow-xs hover:shadow-md hover:border-[#E22765]/40 transition-all duration-300 ${className}`}
+      className={`group relative flex flex-col w-full sm:w-[282px] h-[265px] rounded-2xl bg-[#FDFFF0] border border-[#B4BFCA] shadow-xs hover:shadow-md transition-all duration-300 ${className}`}
     >
+      {/* 16px circular Ticket Notch cutouts (Node 310:16595: x: -8 & x: 274, y: 116.5, w: 16, h: 16, bg: #FFFFFF, border: 1px #B4BFCA) */}
+      <div
+        className="absolute -left-2 top-[116.5px] w-4 h-4 rounded-full bg-white border border-[#B4BFCA] z-20 pointer-events-none"
+        aria-hidden="true"
+      />
+      <div
+        className="absolute -right-2 top-[116.5px] w-4 h-4 rounded-full bg-white border border-[#B4BFCA] z-20 pointer-events-none"
+        aria-hidden="true"
+      />
+
+      {/* Header Image with rounded-t-[15px] to sit cleanly inside the 16px border */}
       <Link
         href={`/events/${event.slug}`}
-        className="block relative w-full h-[124px] bg-slate-200 overflow-hidden"
+        className="block relative w-full h-[124px] bg-slate-200 rounded-t-[15px] overflow-hidden shrink-0"
         aria-label={event.title}
       >
         <Image
@@ -69,22 +80,19 @@ export function EventCard({ event, className = "" }: EventCardProps) {
         </button>
       </Link>
 
-      {/* Ticket Perforation Line with Notches */}
-      <div className="relative w-full border-t border-dashed border-[#B4BFCA] my-0">
-        <div className="absolute -left-2 -top-2 w-4 h-4 rounded-full bg-white border border-[#B4BFCA]" />
-        <div className="absolute -right-2 -top-2 w-4 h-4 rounded-full bg-white border border-[#B4BFCA]" />
-      </div>
+      {/* Ticket Perforation Line (1px dashed #B4BFCA dividing image and body) */}
+      <div className="relative w-full h-0 border-t border-dashed border-[#B4BFCA] shrink-0" />
 
-      {/* Card Body */}
+      {/* Card Body (padding: 12px, spacing: 4px) */}
       <div className="flex-1 p-3 flex flex-col justify-between">
         <div className="space-y-1">
-          {/* Date Label in brand pink (#C81E57) */}
+          {/* Date Label in brand pink (#C81E57 / Variable 17:123) */}
           <div className="text-[12px] font-bold text-[#C81E57] tracking-tight">
             {event.dateLabel}
           </div>
 
-          {/* Event Title */}
-          <h3 className="text-[14px] font-bold text-[#172B3A] tracking-tight line-clamp-2 leading-snug group-hover:text-[#E22765] transition-colors">
+          {/* Event Title (w: 258, h: 40, text: #172B3A) */}
+          <h3 className="text-[14px] font-bold text-[#172B3A] tracking-tight line-clamp-2 leading-[20px] h-[40px] group-hover:text-[#E22765] transition-colors">
             <Link href={`/events/${event.slug}`}>{event.title}</Link>
           </h3>
 
@@ -94,10 +102,10 @@ export function EventCard({ event, className = "" }: EventCardProps) {
           </p>
         </div>
 
-        {/* Footer: Price */}
-        <div className="flex items-center justify-between pt-1 border-t border-stone-200/40">
+        {/* Footer: Price Block (NO border above price block in Figma) */}
+        <div className="flex items-center justify-between pt-1">
           <div className="flex items-baseline gap-1">
-            <span className="text-[11px] text-[#68788A] font-medium">
+            <span className="text-[12px] text-[#4D5E70]">
               {event.priceLabel}
             </span>
             <span className="text-[14px] font-bold text-[#172B3A]">

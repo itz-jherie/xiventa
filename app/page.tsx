@@ -82,39 +82,39 @@ export default function HomePage() {
 
             {/* Search Field & Quick Chips (Node 310:16404 & 310:16414) */}
             <div className="space-y-3 pt-1">
-              {/* Search Field (w: 752, h: 48, bg: white, border: 1px #B4BFCA, rounded-xl 12px) */}
+              {/* Search Field (w: 752, h: 48, r: 999 rounded-full, bg: #F4F6F8, border: 1px #E8ECEF, pl-4 pr-1.5) */}
               <form
                 onSubmit={handleHeroSearch}
-                className="flex items-center w-full h-[48px] bg-white rounded-xl px-4 border border-[#B4BFCA] focus-within:border-[#E22765] focus-within:ring-4 focus-within:ring-[#E22765]/15 transition-all shadow-2xs"
+                className="flex items-center w-full max-w-[752px] h-[48px] bg-[#F4F6F8] rounded-full pl-4 pr-1.5 border border-[#E8ECEF] focus-within:border-[#E22765] focus-within:ring-2 focus-within:ring-[#E22765]/20 focus-within:bg-white transition-all shadow-2xs"
               >
-                <SearchIcon size={18} className="text-[#68788A] mr-3 shrink-0" />
+                <SearchIcon size={20} className="text-[#68788A] mr-2.5 shrink-0" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search events, places or artists"
-                  className="w-full bg-transparent text-[14px] text-[#172B3A] placeholder:text-[#68788A] focus:outline-none font-medium"
+                  className="w-full bg-transparent text-[14px] text-[#172B3A] placeholder:text-[#68788A] focus:outline-none font-normal"
                 />
                 <button
                   type="submit"
                   aria-label="Filter"
-                  className="w-8 h-8 rounded-lg bg-[#E22765] hover:bg-[#C81E57] text-white flex items-center justify-center shrink-0 ml-2 transition shadow-xs"
+                  className="w-9 h-9 rounded-full bg-[#E22765] hover:bg-[#C81E57] text-white flex items-center justify-center shrink-0 transition shadow-xs"
                 >
                   <FilterIcon size={16} />
                 </button>
               </form>
 
-              {/* Quick Filter Chips (Node 310:16414: Tonight, This weekend, Free, Online) */}
-              <div className="flex items-center gap-2 overflow-x-auto pb-1 text-[13px]">
+              {/* Quick Filter Chips (Node 310:16414: Tonight, This weekend, Free, Online; h: 32, r: 999, px-4, text: #4D5E70, border: 1px #B4BFCA) */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-1">
                 {["Tonight", "This weekend", "Free", "Online"].map((chip) => (
                   <button
                     key={chip}
                     type="button"
                     onClick={() => setActiveFilter(activeFilter === chip ? null : chip)}
-                    className={`h-[32px] px-3.5 rounded-full font-medium border transition-colors ${
+                    className={`h-[32px] px-4 rounded-full text-[13px] font-normal border transition-colors shrink-0 ${
                       activeFilter === chip
                         ? "bg-[#172B3A] text-white border-[#172B3A]"
-                        : "bg-white text-[#172B3A] border-[#B4BFCA] hover:border-[#172B3A]"
+                        : "bg-white text-[#4D5E70] border-[#B4BFCA] hover:border-[#172B3A]"
                     }`}
                   >
                     {chip}

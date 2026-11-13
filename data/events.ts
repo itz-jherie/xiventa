@@ -165,3 +165,4 @@ export const EVENTS: XiventaEvent[] = [
     attendeesCount: 1420,
   },
 ];
+

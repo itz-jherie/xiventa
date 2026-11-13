@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Place } from "@/data";
-import { StarIcon } from "@/components/icons";
+import { StarFilledIcon, BookmarkIcon } from "@/components/icons";
 
 interface PlaceCardProps {
   place: Place;
@@ -10,14 +10,16 @@ interface PlaceCardProps {
 
 /**
  * Place Card
- * 1:1 match with Figma `Place Card` (Node `310:16350`)
+ * 1:1 exact match with Figma `Place Card` (Node `310:16350` / `VariableID:17:99`)
  *
- * Dimensions: 384px x 270px, cornerRadius 16px
+ * Dimensions: 384px wide, 270px high, cornerRadius 16px
+ * Image height: 176px
+ * Border: 1px solid #B4BFCA
  */
 export function PlaceCard({ place, className = "" }: PlaceCardProps) {
   return (
     <article
-      className={`group relative flex flex-col w-full sm:w-[384px] h-[270px] rounded-2xl bg-white border border-slate-200/80 overflow-hidden shadow-xs hover:shadow-md hover:border-slate-300 transition-all duration-300 ${className}`}
+      className={`group relative flex flex-col w-full sm:w-[384px] h-[270px] rounded-2xl bg-white border border-[#B4BFCA] overflow-hidden shadow-xs hover:shadow-md hover:border-[#172B3A]/30 transition-all duration-300 ${className}`}
     >
       <Link
         href={`/places/${place.slug}`}
@@ -32,26 +34,39 @@ export function PlaceCard({ place, className = "" }: PlaceCardProps) {
           className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
         />
 
-        {/* Live Status indicator */}
-        <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5 z-10">
+        {/* Live Status indicator (Node 310:16350 Place Card top-left) */}
+        <div className="absolute top-3 left-3 z-10">
           {place.isOpenNow ? (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-950/80 text-emerald-300 backdrop-blur-xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[12px] font-semibold bg-[#E4F8EF] text-[#067647] shadow-xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#067647]" />
               Open now
             </span>
           ) : (
-            <span className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-900/80 text-slate-300 backdrop-blur-xs">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[12px] font-medium bg-[#F4F6F8] text-[#68788A] shadow-xs">
               Closed
             </span>
           )}
         </div>
+
+        {/* Save button (Node 310:16350 Place Card top-right) */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+          aria-label="Save place"
+          className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/75 hover:bg-white text-[#172B3A] flex items-center justify-center backdrop-blur-xs transition z-10 shadow-xs"
+        >
+          <BookmarkIcon size={16} />
+        </button>
       </Link>
 
       {/* Body */}
       <div className="flex-1 p-3.5 flex flex-col justify-between">
         <div className="space-y-1">
           <div className="flex items-center justify-between gap-2">
-            <h3 className="text-[16px] font-bold text-[#172b3a] tracking-tight group-hover:text-brand-600 transition-colors line-clamp-1">
+            <h3 className="text-[16px] font-bold text-[#172B3A] tracking-tight group-hover:text-[#E22765] transition-colors line-clamp-1">
               <Link href={`/places/${place.slug}`}>{place.name}</Link>
             </h3>
 
@@ -62,7 +77,7 @@ export function PlaceCard({ place, className = "" }: PlaceCardProps) {
             </span>
           </div>
 
-          <p className="text-[12px] text-[#4d5e70] font-normal">
+          <p className="text-[12px] text-[#4D5E70] font-normal truncate">
             {place.metaLabel}
           </p>
         </div>
@@ -70,18 +85,18 @@ export function PlaceCard({ place, className = "" }: PlaceCardProps) {
         {/* Stats Row */}
         <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-[12px]">
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1 text-[#172b3a] font-bold">
-              <StarIcon size={14} className="text-[#ffb020] fill-[#ffb020]" />
+            <div className="flex items-center gap-1 text-[#172B3A] font-bold">
+              <StarFilledIcon size={14} className="text-[#FFB020]" />
               <span>{place.rating.toFixed(1)}</span>
             </div>
             <span className="text-slate-300">·</span>
-            <span className="text-[#68788a]">{place.distanceLabel}</span>
+            <span className="text-[#68788A]">{place.distanceLabel}</span>
           </div>
 
           {place.beenHereCount && (
-            <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[11px] font-semibold">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-              <span>{place.beenHereCount} been here</span>
+            <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#E6F1FF] text-[#0059BE] text-[11px] font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#0059BE]" />
+              <span>Been here</span>
             </div>
           )}
         </div>

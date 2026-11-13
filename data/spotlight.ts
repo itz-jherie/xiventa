@@ -57,3 +57,4 @@ export const SPOTLIGHT_STORIES: SpotlightStory[] = [
     avatarBg: "bg-gradient-to-tr from-blue-600 to-cyan-400",
   },
 ];
+

@@ -37,3 +37,4 @@ export function getAllCategories() {
 export function getSpotlightStories() {
   return SPOTLIGHT_STORIES;
 }
+

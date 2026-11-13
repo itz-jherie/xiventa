@@ -96,3 +96,4 @@ export function SpotlightCard({ story, className = "" }: SpotlightCardProps) {
     </article>
   );
 }
+

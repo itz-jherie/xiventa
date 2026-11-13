@@ -114,3 +114,4 @@ export const CATEGORIES: EventCategory[] = [
     count: 13,
   },
 ];
+

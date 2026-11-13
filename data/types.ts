@@ -78,3 +78,4 @@ export interface SpotlightStory {
   imageUrl: string;
   avatarBg?: string;
 }
+

@@ -10,16 +10,18 @@ interface EventCardProps {
 
 /**
  * Event Card
- * 1:1 match with Figma `Event Card` (Node `310:16350` / `VariableID:17:94`)
+ * 1:1 exact match with Figma `Event Card` (Node `310:16350` / `VariableID:17:94`)
  *
  * - Paper Ticket styling: Warm ivory (#FDFFF0) background
  * - Physical dashed perforation line dividing image header and details
+ * - 16px circular Ticket Notch cutouts on both left and right edges
  * - Dimension: 282px x 265px, cornerRadius 16px
+ * - Border: 1px solid #B4BFCA (Variable 17:132)
  */
 export function EventCard({ event, className = "" }: EventCardProps) {
   return (
     <article
-      className={`group relative flex flex-col w-full sm:w-[282px] h-[265px] rounded-2xl bg-[#fdfff0] border border-stone-200/60 overflow-hidden shadow-xs hover:shadow-md hover:border-brand-500/30 transition-all duration-300 ${className}`}
+      className={`group relative flex flex-col w-full sm:w-[282px] h-[265px] rounded-2xl bg-[#FDFFF0] border border-[#B4BFCA] overflow-hidden shadow-xs hover:shadow-md hover:border-[#E22765]/40 transition-all duration-300 ${className}`}
     >
       <Link
         href={`/events/${event.slug}`}
@@ -37,17 +39,17 @@ export function EventCard({ event, className = "" }: EventCardProps) {
         {/* Top Badges */}
         <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 z-10">
           {event.isFree && (
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/95 text-brand-600 shadow-xs backdrop-blur-xs">
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white text-[#0059BE] shadow-xs">
               Free
             </span>
           )}
           {event.isOnline && (
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-900/80 text-white shadow-xs backdrop-blur-xs">
-              Online
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#E6F1FF] text-[#0059BE] shadow-xs">
+              Online · Zoom
             </span>
           )}
           {event.isSoldOut && (
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-600 text-white shadow-xs">
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FFE8E8] text-[#D92D20] shadow-xs">
               Sold out
             </span>
           )}
@@ -61,61 +63,53 @@ export function EventCard({ event, className = "" }: EventCardProps) {
             e.stopPropagation();
           }}
           aria-label="Save event"
-          className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-xs transition z-10 opacity-80 group-hover:opacity-100"
+          className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-white/70 hover:bg-white text-[#172B3A] flex items-center justify-center backdrop-blur-xs transition z-10"
         >
           <BookmarkIcon size={14} />
         </button>
       </Link>
 
-      {/* Ticket Perforation Line */}
-      <div className="relative w-full border-t border-dashed border-[#b4bfca]/80 my-0">
-        {/* Physical ticket notch cutouts */}
-        <div className="absolute -left-2 -top-1.5 w-3 h-3 rounded-full bg-white border-r border-stone-200/60" />
-        <div className="absolute -right-2 -top-1.5 w-3 h-3 rounded-full bg-white border-l border-stone-200/60" />
+      {/* Ticket Perforation Line with Notches */}
+      <div className="relative w-full border-t border-dashed border-[#B4BFCA] my-0">
+        <div className="absolute -left-2 -top-2 w-4 h-4 rounded-full bg-white border border-[#B4BFCA]" />
+        <div className="absolute -right-2 -top-2 w-4 h-4 rounded-full bg-white border border-[#B4BFCA]" />
       </div>
 
       {/* Card Body */}
       <div className="flex-1 p-3 flex flex-col justify-between">
         <div className="space-y-1">
-          {/* Date Label in brand-600 (#c81e57) */}
-          <div className="text-[12px] font-semibold text-brand-600 tracking-tight">
+          {/* Date Label in brand pink (#C81E57) */}
+          <div className="text-[12px] font-bold text-[#C81E57] tracking-tight">
             {event.dateLabel}
           </div>
 
           {/* Event Title */}
-          <h3 className="text-[15px] font-bold text-[#172b3a] tracking-tight line-clamp-1 group-hover:text-brand-600 transition-colors">
+          <h3 className="text-[14px] font-bold text-[#172B3A] tracking-tight line-clamp-2 leading-snug group-hover:text-[#E22765] transition-colors">
             <Link href={`/events/${event.slug}`}>{event.title}</Link>
           </h3>
 
           {/* Host & Venue */}
-          <p className="text-[12px] text-[#4d5e70] line-clamp-1">
-            {event.hostName} · {event.venueName}, {event.neighborhood}
+          <p className="text-[12px] text-[#4D5E70] line-clamp-1">
+            {event.hostName} · {event.venueName}
           </p>
         </div>
 
-        {/* Footer: Price & Restriction tags */}
-        <div className="flex items-center justify-between pt-1 border-t border-stone-100/80 mt-1">
+        {/* Footer: Price */}
+        <div className="flex items-center justify-between pt-1 border-t border-stone-200/40">
           <div className="flex items-baseline gap-1">
-            <span className="text-[11px] text-[#68788a] font-medium">
+            <span className="text-[11px] text-[#68788A] font-medium">
               {event.priceLabel}
             </span>
-            <span className="text-[14px] font-bold text-[#172b3a]">
+            <span className="text-[14px] font-bold text-[#172B3A]">
               {event.displayPrice}
             </span>
           </div>
 
-          <div className="flex items-center gap-1 text-[11px] text-[#68788a]">
-            {event.ageRestriction && (
-              <span className="px-1.5 py-0.5 rounded bg-stone-100 font-semibold text-[10px]">
-                {event.ageRestriction}
-              </span>
-            )}
-            {event.recurrence && (
-              <span className="text-[11px] text-slate-500 font-medium">
-                {event.recurrence}
-              </span>
-            )}
-          </div>
+          {event.ageRestriction && (
+            <span className="px-1.5 py-0.5 rounded-sm border border-[#B4BFCA] text-[10px] font-bold text-[#172B3A]">
+              {event.ageRestriction}
+            </span>
+          )}
         </div>
       </div>
     </article>

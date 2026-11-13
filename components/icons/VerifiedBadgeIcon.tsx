@@ -21,3 +21,4 @@ export function VerifiedBadgeIcon({ size = 14, className = "" }: IconProps) {
     </svg>
   );
 }
+

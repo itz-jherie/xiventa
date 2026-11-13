@@ -1,17 +1,15 @@
 import Link from "next/link";
 import {
-  Search,
-  Filter,
-  MapPin,
-  Calendar,
-  Clock,
-  Compass,
-  Ticket,
-  Bookmark,
-  User,
-  Plus,
-  ArrowRight,
-} from "lucide-react";
+  SearchIcon,
+  FilterIcon,
+  MapPinIcon,
+  CalendarIcon,
+  TicketIcon,
+  BookmarkIcon,
+  UserIcon,
+  PlusIcon,
+  NavigationIcon,
+} from "@/components/icons";
 
 export default function HomePage() {
   const categories = [
@@ -57,8 +55,8 @@ export default function HomePage() {
           <span className="text-2xl font-bold tracking-tightest text-brand-500">
             Xiventa
           </span>
-          <div className="flex items-center gap-1 text-slate-500 text-xs font-medium">
-            <MapPin size={13} strokeWidth={1.75} className="text-slate-400" />
+          <div className="flex items-center gap-1 text-slate-500 text-xs font-medium mt-0.5">
+            <MapPinIcon size={14} className="text-slate-400" />
             <span>Lagos, Nigeria</span>
           </div>
         </div>
@@ -68,7 +66,7 @@ export default function HomePage() {
             href="/events/new"
             className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-full border border-slate-200 text-slate-700 hover:bg-slate-50 transition"
           >
-            <Plus size={14} strokeWidth={1.75} />
+            <PlusIcon size={14} />
             <span>Create Event</span>
           </Link>
           <Link
@@ -92,19 +90,18 @@ export default function HomePage() {
         {/* Search & Filter Bar */}
         <div className="mt-5 flex gap-2 max-w-md">
           <div className="relative flex-1">
-            <Search
-              size={16}
-              strokeWidth={1.75}
+            <SearchIcon
+              size={18}
               className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
             />
             <input
               type="text"
               placeholder="Search by event, host or location..."
-              className="w-full pl-9 pr-4 py-2.5 rounded-full border border-slate-200 text-xs bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition"
+              className="w-full pl-10 pr-4 py-2.5 rounded-full border border-slate-200 text-xs bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition"
             />
           </div>
           <button className="px-3.5 py-2.5 rounded-full border border-slate-200 text-slate-700 hover:bg-slate-50 transition flex items-center justify-center">
-            <Filter size={15} strokeWidth={1.75} />
+            <FilterIcon size={16} />
           </button>
         </div>
 
@@ -130,9 +127,8 @@ export default function HomePage() {
           <h2 className="text-lg sm:text-xl font-bold tracking-tighter-sm text-slate-900">
             Featured events near you
           </h2>
-          <span className="text-xs font-semibold text-brand-600 hover:text-brand-700 cursor-pointer flex items-center gap-1">
-            <span>See all</span>
-            <ArrowRight size={13} strokeWidth={1.75} />
+          <span className="text-xs font-semibold text-brand-600 hover:text-brand-700 cursor-pointer">
+            See all
           </span>
         </div>
 
@@ -159,12 +155,12 @@ export default function HomePage() {
                 </h3>
 
                 <p className="text-xs font-semibold text-brand-600 mb-2 flex items-center gap-1.5">
-                  <Calendar size={13} strokeWidth={1.75} />
+                  <CalendarIcon size={14} />
                   <span>{event.date}</span>
                 </p>
 
                 <p className="text-xs text-slate-600 mb-3 flex items-center gap-1.5">
-                  <MapPin size={13} strokeWidth={1.75} className="text-slate-400" />
+                  <MapPinIcon size={14} className="text-slate-400" />
                   <span>{event.venue}</span>
                 </p>
 
@@ -187,7 +183,7 @@ export default function HomePage() {
                   href={`/events/${event.id}`}
                   className="px-4 py-2 rounded-xl text-xs font-semibold bg-brand-500 text-white hover:bg-brand-600 transition shadow-sm flex items-center gap-1.5"
                 >
-                  <Ticket size={14} strokeWidth={1.75} />
+                  <TicketIcon size={16} />
                   <span>Get tickets</span>
                 </Link>
               </div>
@@ -199,28 +195,28 @@ export default function HomePage() {
       {/* Mobile Bottom Navigation Bar (PWA Experience) */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 px-6 py-2.5 flex items-center justify-around z-50 shadow-elevation-2">
         <Link href="/" className="flex flex-col items-center gap-0.5 text-brand-500">
-          <Compass size={18} strokeWidth={1.75} />
+          <NavigationIcon size={20} />
           <span className="text-[10px] font-bold">Discover</span>
         </Link>
         <Link
           href="/tickets"
           className="flex flex-col items-center gap-0.5 text-slate-400 hover:text-slate-900"
         >
-          <Ticket size={18} strokeWidth={1.75} />
+          <TicketIcon size={20} />
           <span className="text-[10px] font-medium">My Tickets</span>
         </Link>
         <Link
           href="/saved"
           className="flex flex-col items-center gap-0.5 text-slate-400 hover:text-slate-900"
         >
-          <Bookmark size={18} strokeWidth={1.75} />
+          <BookmarkIcon size={20} />
           <span className="text-[10px] font-medium">Saved</span>
         </Link>
         <Link
           href="/account"
           className="flex flex-col items-center gap-0.5 text-slate-400 hover:text-slate-900"
         >
-          <User size={18} strokeWidth={1.75} />
+          <UserIcon size={20} />
           <span className="text-[10px] font-medium">Account</span>
         </Link>
       </nav>

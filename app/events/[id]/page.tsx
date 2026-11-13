@@ -1,14 +1,14 @@
 import Link from "next/link";
 import {
-  ArrowLeft,
-  Calendar,
-  Clock,
-  MapPin,
-  Check,
-  ShieldCheck,
-  Plus,
-  Ticket,
-} from "lucide-react";
+  ArrowLeftIcon,
+  CalendarIcon,
+  ClockIcon,
+  MapPinIcon,
+  CheckIcon,
+  ShieldCheckIcon,
+  PlusIcon,
+  TicketIcon,
+} from "@/components/icons";
 
 export function generateStaticParams() {
   return [{ id: "neon-nights-lagos" }, { id: "afro-fusion-fest" }];
@@ -69,7 +69,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
           href="/"
           className="text-xs font-semibold text-slate-700 hover:text-slate-900 flex items-center gap-1.5 transition"
         >
-          <ArrowLeft size={15} strokeWidth={1.75} />
+          <ArrowLeftIcon size={16} />
           <span>Back to Discovery</span>
         </Link>
         <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
@@ -87,7 +87,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
               {event.category}
             </span>
             <span className="text-xs text-white/70 flex items-center gap-1">
-              <ShieldCheck size={13} strokeWidth={1.75} className="text-mint-500" />
+              <ShieldCheckIcon size={14} className="text-mint-500" />
               <span>Verified Event</span>
             </span>
           </div>
@@ -103,7 +103,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
             <div>
               <p className="text-xs font-bold text-white flex items-center gap-1">
                 {event.organizer.name}
-                <Check size={12} strokeWidth={2.5} className="text-mint-500" />
+                <CheckIcon size={13} className="text-mint-500" />
               </p>
               <p className="text-[11px] text-white/60">{event.organizer.followers}</p>
             </div>
@@ -117,7 +117,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
         <section className="bg-white rounded-2xl p-5 border border-slate-100 shadow-elevation-1 space-y-4">
           <div className="flex items-start gap-3">
             <div className="p-2 rounded-xl bg-slate-50 text-brand-500 mt-0.5">
-              <Calendar size={18} strokeWidth={1.75} />
+              <CalendarIcon size={18} />
             </div>
             <div>
               <h2 className="text-xs uppercase font-bold text-slate-400 tracking-wider mb-0.5">
@@ -125,7 +125,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
               </h2>
               <p className="text-sm font-bold text-slate-900">{event.date}</p>
               <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
-                <Clock size={12} strokeWidth={1.75} />
+                <ClockIcon size={13} />
                 <span>Doors open at 10 PM prompt</span>
               </p>
             </div>
@@ -133,7 +133,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
 
           <div className="border-t border-slate-100 pt-3 flex items-start gap-3">
             <div className="p-2 rounded-xl bg-slate-50 text-brand-500 mt-0.5">
-              <MapPin size={18} strokeWidth={1.75} />
+              <MapPinIcon size={18} />
             </div>
             <div>
               <h2 className="text-xs uppercase font-bold text-slate-400 tracking-wider mb-0.5">
@@ -157,7 +157,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
         {/* Ticket Tiers Selection */}
         <section className="space-y-3">
           <h2 className="text-base font-bold tracking-tighter-sm text-slate-900 flex items-center gap-2">
-            <Ticket size={18} strokeWidth={1.75} className="text-brand-500" />
+            <TicketIcon size={18} className="text-brand-500" />
             <span>Select Your Tickets</span>
           </h2>
 
@@ -171,7 +171,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
                   <div className="flex items-center gap-2">
                     <h3 className="text-sm font-bold text-slate-900">{tier.name}</h3>
                     <span className="text-[10px] font-semibold text-status-success-text bg-status-success-bg px-2 py-0.5 rounded-full flex items-center gap-1">
-                      <Check size={10} strokeWidth={2.5} />
+                      <CheckIcon size={11} />
                       <span>Available</span>
                     </span>
                   </div>
@@ -180,7 +180,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
                 </div>
 
                 <button className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-brand-50 text-brand-700 hover:bg-brand-100 transition whitespace-nowrap flex items-center gap-1">
-                  <Plus size={13} strokeWidth={2} />
+                  <PlusIcon size={13} />
                   <span>Add</span>
                 </button>
               </div>

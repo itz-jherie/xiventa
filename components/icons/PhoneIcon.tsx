@@ -1,0 +1,21 @@
+import * as React from "react";
+
+export function PhoneIcon({
+  size = 24,
+  className = "",
+  ...props
+}: React.SVGProps<SVGSVGElement> & { size?: number | string }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      {...props}
+    >
+      <path d="M6.5 4H9.5L11 8L9 9.5C9.5029 10.7377 10.2487 11.862 11.1933 12.8067C12.138 13.7513 13.2623 14.4971 14.5 15L16 13L20 14.5V17.5C20 18.0304 19.7893 18.5391 19.4142 18.9142C19.0391 19.2893 18.5304 19.5 18 19.5C14.5322 19.1675 11.2883 17.6384 8.82493 15.1751C6.36159 12.7117 4.83247 9.46779 4.5 6C4.5 5.46957 4.71071 4.96086 5.08579 4.58579C5.46086 4.21071 5.96957 4 6.5 4Z" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" stroke="currentColor"/>
+    </svg>
+  );
+}

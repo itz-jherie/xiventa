@@ -62,6 +62,7 @@ export * from "./UploadIcon";
 export * from "./UserIcon";
 export * from "./UsersIcon";
 export * from "./UtensilsIcon";
+export * from "./VerifiedBadgeIcon";
 export * from "./VideoIcon";
 export * from "./WalletIcon";
 export * from "./WifiOffIcon";

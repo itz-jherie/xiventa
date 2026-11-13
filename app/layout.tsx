@@ -41,8 +41,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${arimo.variable} antialiased`}>
-      <body className="min-h-screen flex flex-col font-sans bg-background text-foreground">
+    <html lang="en" className={`${arimo.variable} antialiased`} suppressHydrationWarning>
+      <body
+        className="min-h-screen flex flex-col font-sans bg-background text-foreground"
+        suppressHydrationWarning
+      >
         {children}
       </body>
     </html>

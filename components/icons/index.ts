@@ -1,6 +1,7 @@
 export * from "./AccessibilityIcon";
 export * from "./AlertIcon";
 export * from "./ArrowLeftIcon";
+export * from "./ArrowRightIcon";
 export * from "./BagIcon";
 export * from "./BallIcon";
 export * from "./BalloonIcon";
@@ -64,3 +65,4 @@ export * from "./UtensilsIcon";
 export * from "./VideoIcon";
 export * from "./WalletIcon";
 export * from "./WifiOffIcon";
+export * from "./XiventaLogo";

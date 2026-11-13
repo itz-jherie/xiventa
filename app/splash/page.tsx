@@ -6,48 +6,86 @@ import { SplashScreen } from "@/components/shared/SplashScreen";
 
 export default function SplashPreviewPage() {
   const [key, setKey] = useState(0);
-  const [persistent, setPersistent] = useState(true);
+  const [persistent, setPersistent] = useState(false);
+  const [isDismissed, setIsDismissed] = useState(false);
 
   return (
-    <div className="relative min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
-      {/* Active Splash Screen */}
+    <div className="relative min-h-screen bg-slate-900 flex flex-col items-center justify-center text-white">
+      {/* Exact AM01 Launch Splash Screen (auto-dismisses in 2s or tap to dismiss) */}
       <SplashScreen
         key={key}
         persistent={persistent}
-        minDuration={2400}
+        minDuration={2000}
         onFinish={() => {
-          console.log("Splash finished transition");
+          setIsDismissed(true);
         }}
       />
 
-      {/* Floating control dock for inspecting during development */}
-      <div className="fixed bottom-6 z-[110] bg-slate-900/90 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full shadow-2xl flex items-center gap-3 text-xs text-white">
-        <span className="font-semibold text-brand-400">Splash Controls:</span>
+      {/* Post-splash landing state */}
+      {isDismissed && (
+        <div className="max-w-md w-full px-6 py-12 flex flex-col items-center text-center animate-in fade-in zoom-in-95 duration-500">
+          <div className="w-16 h-16 rounded-2xl bg-brand-500/20 text-brand-400 flex items-center justify-center font-bold text-2xl mb-4 border border-brand-500/30">
+            AM
+          </div>
+          <h1 className="text-xl font-bold tracking-tight text-white mb-2">
+            AM01 Launch Complete
+          </h1>
+          <p className="text-sm text-slate-400 mb-8 max-w-xs">
+            In Figma, AM01 Launch transitions directly into AM02 Welcome and sign in.
+          </p>
+
+          <div className="flex flex-col w-full gap-3">
+            <button
+              onClick={() => {
+                try {
+                  sessionStorage.removeItem("xiventa_splash_seen");
+                } catch {}
+                setIsDismissed(false);
+                setKey((k) => k + 1);
+              }}
+              className="w-full py-3 px-4 rounded-xl bg-brand-500 hover:bg-brand-600 font-semibold text-sm transition shadow-lg shadow-brand-500/25"
+            >
+              Replay Splash Screen
+            </button>
+            <Link
+              href="/"
+              className="w-full py-3 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 font-medium text-sm transition border border-white/10"
+            >
+              Go to Home Screen
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* Floating dev dock */}
+      <div className="fixed bottom-6 z-[110] bg-slate-950/90 backdrop-blur-md border border-white/15 px-4 py-2 rounded-full shadow-2xl flex items-center gap-3 text-xs text-white max-w-[90vw] overflow-x-auto">
+        <span className="font-semibold text-brand-400 whitespace-nowrap">AM01:</span>
         <button
           onClick={() => {
-            sessionStorage.removeItem("xiventa_splash_seen");
+            try {
+              sessionStorage.removeItem("xiventa_splash_seen");
+            } catch {}
+            setIsDismissed(false);
             setKey((k) => k + 1);
           }}
-          className="px-3 py-1 rounded-full bg-brand-500 hover:bg-brand-600 font-semibold transition"
+          className="px-3 py-1 rounded-full bg-white text-brand-600 font-bold hover:bg-slate-100 transition shadow-sm whitespace-nowrap"
         >
           Replay
         </button>
         <button
-          onClick={() => setPersistent(!persistent)}
-          className={`px-3 py-1 rounded-full border transition ${
+          onClick={() => {
+            setPersistent(!persistent);
+            setIsDismissed(false);
+            setKey((k) => k + 1);
+          }}
+          className={`px-3 py-1 rounded-full border transition whitespace-nowrap ${
             persistent
               ? "bg-white/20 border-white/40 text-white font-semibold"
               : "border-white/20 text-white/70"
           }`}
         >
-          {persistent ? "Mode: Persistent" : "Mode: Auto dismiss (2.4s)"}
+          {persistent ? "Mode: Freeze" : "Mode: Auto-close (2s)"}
         </button>
-        <Link
-          href="/"
-          className="px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white/80 transition"
-        >
-          Back to Discover
-        </Link>
       </div>
     </div>
   );

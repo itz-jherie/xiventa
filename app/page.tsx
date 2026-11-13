@@ -129,7 +129,7 @@ export default function HomePage() {
             {/* Mode Tile: Events (Node 310:16451, w: 400, h: 140, cornerRadius: 12) */}
             <Link
               href="/events"
-              className="group relative block w-full h-[140px] rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-all active:scale-[0.99] border border-orange-200/50"
+              className="group relative block w-full h-[140px] rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-all active:scale-[0.99]"
             >
               <Image
                 src="/images/mode-events.svg"
@@ -143,7 +143,7 @@ export default function HomePage() {
             {/* Mode Tile: Places (Node 310:16463, w: 400, h: 140, cornerRadius: 12) */}
             <Link
               href="/places"
-              className="group relative block w-full h-[140px] rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-all active:scale-[0.99] border border-purple-200/50"
+              className="group relative block w-full h-[140px] rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-all active:scale-[0.99]"
             >
               <Image
                 src="/images/mode-places.svg"

@@ -17,7 +17,7 @@ interface SpotlightCardProps {
 export function SpotlightCard({ story, className = "" }: SpotlightCardProps) {
   return (
     <article
-      className={`group relative flex-shrink-0 w-[215px] h-[429px] rounded-2xl overflow-hidden shadow-md select-none bg-slate-900 border border-white/10 hover:border-brand-500/50 hover:shadow-xl transition-all duration-300 ${className}`}
+      className={`group relative flex-shrink-0 w-[215px] h-[429px] rounded-2xl overflow-hidden shadow-md select-none bg-slate-900 hover:shadow-xl transition-all duration-300 ${className}`}
     >
       {/* Background Image/Video preview */}
       <Image

@@ -10,10 +10,10 @@ import { XiventaLogo } from "@/components/icons";
  */
 export function WebFooter() {
   return (
-    <footer className="w-full bg-[#172b3a] text-white pt-12 pb-8 border-t border-slate-800">
+    <footer className="w-full bg-[#172b3a] text-white pt-12 pb-8">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
         {/* Top 4 Column Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-10 pb-10 border-b border-white/10">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-10 pb-10">
           {/* Brand Column */}
           <div className="md:col-span-2 space-y-4">
             <Link href="/" className="inline-block" aria-label="Xiventa home">

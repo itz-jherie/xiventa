@@ -10,16 +10,16 @@ interface PlaceCardProps {
 
 /**
  * Place Card
- * 1:1 exact match with Figma `Place Card` (Node `310:16350` / `VariableID:17:99`)
+ * 1:1 exact match with Figma `Place Card` (Node `310:16892`)
  *
  * Dimensions: 384px wide, 270px high, cornerRadius 16px
  * Image height: 176px
- * Border: 1px solid #B4BFCA
+ * Border: NONE (strokes: []) - Card has zero border in Figma!
  */
 export function PlaceCard({ place, className = "" }: PlaceCardProps) {
   return (
     <article
-      className={`group relative flex flex-col w-full sm:w-[384px] h-[270px] rounded-2xl bg-white border border-[#B4BFCA] overflow-hidden shadow-xs hover:shadow-md hover:border-[#172B3A]/30 transition-all duration-300 ${className}`}
+      className={`group relative flex flex-col w-full sm:w-[384px] h-[270px] rounded-2xl bg-white overflow-hidden shadow-xs hover:shadow-md transition-all duration-300 ${className}`}
     >
       <Link
         href={`/places/${place.slug}`}

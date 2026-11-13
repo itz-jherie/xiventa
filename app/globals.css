@@ -1,0 +1,191 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* Font Family - Arimo */
+  --font-sans: var(--font-arimo), system-ui, -apple-system, sans-serif;
+
+  /* Brand Colors */
+  --color-brand-50: #FDEEF3;
+  --color-brand-100: #FBD5E2;
+  --color-brand-200: #F6A9C3;
+  --color-brand-300: #EF7AA2;
+  --color-brand-400: #E84E84;
+  --color-brand-500: #E22765;
+  --color-brand-600: #C81E57;
+  --color-brand-700: #A2174A;
+  --color-brand-800: #7A1238;
+  --color-brand: #E22765;
+  --color-brand-hover: #C81E57;
+
+  /* Wine Ramps (Deep Brand Surfaces) */
+  --color-wine-700: #6B0A2E;
+  --color-wine-800: #520421;
+  --color-wine-900: #3D0016;
+
+  /* Slate Neutrals (UI Surfaces, Text, Borders) */
+  --color-slate-0: #FFFFFF;
+  --color-slate-25: #FAFBCF;
+  --color-slate-50: #F4F6F8;
+  --color-slate-100: #E9EDF1;
+  --color-slate-200: #D5DCE3;
+  --color-slate-300: #B4BFCA;
+  --color-slate-400: #8C99A7;
+  --color-slate-500: #68788A;
+  --color-slate-600: #4D5E70;
+  --color-slate-700: #33465A;
+  --color-slate-800: #23364A;
+  --color-slate-900: #172B3A;
+  --color-slate-950: #0E1C27;
+
+  /* Supporting / Category Colors */
+  --color-violet-50: #F1EEFF;
+  --color-violet-500: #977BFF;
+  --color-violet-700: #5B3FD6;
+
+  --color-blue-50: #E6F1FF;
+  --color-blue-500: #0278FB;
+  --color-blue-700: #0059BE;
+
+  --color-magenta-50: #FFEDFD;
+  --color-magenta-500: #FF70F5;
+  --color-magenta-700: #A8189E;
+
+  --color-mint-50: #E0FBF5;
+  --color-mint-500: #00E0B6;
+  --color-mint-700: #00735E;
+
+  --color-orange-50: #FFEEE7;
+  --color-orange-500: #FD703C;
+  --color-orange-700: #B23F0E;
+
+  /* Accent Colors (Branding & Illustrations) */
+  --color-accent-red: #FA443A;
+  --color-accent-peach: #FE9F7C;
+  --color-accent-lime: #D2E871;
+  --color-accent-lemon: #F3FDB8;
+  --color-accent-pink: #FF9ED9;
+  --color-accent-blush: #FDCFBC;
+  --color-accent-cream: #FDFFF0;
+
+  /* Semantic Status Colors */
+  --color-status-success-bg: #E3F8EF;
+  --color-status-success: #12B76A;
+  --color-status-success-text: #067647;
+
+  --color-status-warning-bg: #FFF6DD;
+  --color-status-warning: #FFB020;
+  --color-status-warning-text: #8F5200;
+
+  --color-status-error-bg: #FFECEB;
+  --color-status-error: #FA443A;
+  --color-status-error-text: #C0231A;
+
+  /* Elevation Shadows */
+  --shadow-elevation-1: 0 1px 2px 0 rgba(23, 43, 58, 0.05);
+  --shadow-elevation-2: 0 4px 12px 0 rgba(23, 43, 58, 0.08);
+  --shadow-elevation-3: 0 12px 32px 0 rgba(23, 43, 58, 0.16);
+  --shadow-sticker: 3px 3px 0px 0px #3D0016;
+
+  /* Radii */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+}
+
+:root {
+  /* Semantic Tokens for Tailwind & Components */
+  --background: var(--color-slate-0);
+  --foreground: var(--color-slate-900);
+
+  --card: var(--color-slate-0);
+  --card-foreground: var(--color-slate-900);
+
+  --popover: var(--color-slate-0);
+  --popover-foreground: var(--color-slate-900);
+
+  --primary: var(--color-brand-500);
+  --primary-foreground: #FFFFFF;
+  --primary-hover: var(--color-brand-600);
+
+  --secondary: var(--color-slate-50);
+  --secondary-foreground: var(--color-slate-900);
+
+  --muted: var(--color-slate-50);
+  --muted-foreground: var(--color-slate-600);
+
+  --accent: var(--color-brand-50);
+  --accent-foreground: var(--color-brand-700);
+
+  --destructive: var(--color-status-error);
+  --destructive-foreground: #FFFFFF;
+
+  --border: var(--color-slate-100);
+  --border-subtle: var(--color-slate-200);
+  --input: var(--color-slate-100);
+  --ring: var(--color-brand-500);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: var(--color-slate-950);
+    --foreground: var(--color-slate-50);
+
+    --card: var(--color-slate-900);
+    --card-foreground: var(--color-slate-50);
+
+    --popover: var(--color-slate-900);
+    --popover-foreground: var(--color-slate-50);
+
+    --primary: var(--color-brand-500);
+    --primary-foreground: #FFFFFF;
+    --primary-hover: var(--color-brand-400);
+
+    --secondary: var(--color-slate-800);
+    --secondary-foreground: var(--color-slate-50);
+
+    --muted: var(--color-slate-800);
+    --muted-foreground: var(--color-slate-400);
+
+    --accent: var(--color-wine-900);
+    --accent-foreground: var(--color-brand-200);
+
+    --destructive: var(--color-status-error);
+    --destructive-foreground: #FFFFFF;
+
+    --border: var(--color-slate-800);
+    --border-subtle: var(--color-slate-700);
+    --input: var(--color-slate-800);
+    --ring: var(--color-brand-400);
+  }
+}
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  min-height: 100dvh;
+}
+
+/* Typography Letter Spacing Rules from Figma */
+.tracking-tightest {
+  letter-spacing: -0.02em; /* -2% for Display & H1-H3 */
+}
+.tracking-tighter-sm {
+  letter-spacing: -0.01em; /* -1% for H4, Body Large, Button Large */
+}
+.tracking-overline {
+  letter-spacing: 0.04em; /* +4% for Caption Overline uppercase */
+}

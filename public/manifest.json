@@ -1,0 +1,25 @@
+{
+  "name": "Xiventa · Events & Tickets",
+  "short_name": "Xiventa",
+  "description": "Discover curated events, hold offline tickets, and explore places worth the trip.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#E22765",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["entertainment", "events", "lifestyle"]
+}

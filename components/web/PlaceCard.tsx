@@ -14,12 +14,12 @@ interface PlaceCardProps {
  *
  * Dimensions: 384px wide, 270px high, cornerRadius 16px
  * Image height: 176px
- * Border: NONE (strokes: []) - Card has zero border in Figma!
+ * Border: 1px #D5DCE3 (VariableID:17:131)
  */
 export function PlaceCard({ place, className = "" }: PlaceCardProps) {
   return (
     <article
-      className={`group relative flex flex-col w-full sm:w-[384px] h-[270px] rounded-2xl bg-white overflow-hidden shadow-xs hover:shadow-md transition-all duration-300 ${className}`}
+      className={`group relative flex flex-col w-full sm:w-[384px] h-[270px] rounded-2xl bg-white border border-[#D5DCE3] overflow-hidden shadow-xs hover:shadow-md transition-all duration-300 ${className}`}
     >
       <Link
         href={`/places/${place.slug}`}
@@ -83,7 +83,7 @@ export function PlaceCard({ place, className = "" }: PlaceCardProps) {
         </div>
 
         {/* Stats Row */}
-        <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-[12px]">
+        <div className="flex items-center justify-between pt-1 text-[12px]">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1 text-[#172B3A] font-bold">
               <StarFilledIcon size={14} className="text-[#FFB020]" />

@@ -82,10 +82,10 @@ export default function HomePage() {
 
             {/* Search Field & Quick Chips (Node 310:16404 & 310:16414) */}
             <div className="space-y-3 pt-1">
-              {/* Search Field (w: 752, h: 48, r: 999 rounded-full, bg: #F4F6F8, border: 1px #E8ECEF, pl-4 pr-1.5) */}
+              {/* Search Field (w: 752, h: 48, r: 999 rounded-full, bg: #F4F6F8, border: 1px #E9EDF1, pl-4 pr-1.5) */}
               <form
                 onSubmit={handleHeroSearch}
-                className="flex items-center w-full max-w-[752px] h-[48px] bg-[#F4F6F8] rounded-full pl-4 pr-1.5 border border-[#E8ECEF] focus-within:border-[#E22765] focus-within:ring-2 focus-within:ring-[#E22765]/20 focus-within:bg-white transition-all shadow-2xs"
+                className="flex items-center w-full max-w-[752px] h-[48px] bg-[#F4F6F8] rounded-full pl-4 pr-1.5 border border-[#E9EDF1] focus-within:border-[#E22765] focus-within:ring-2 focus-within:ring-[#E22765]/20 focus-within:bg-white transition-all shadow-2xs"
               >
                 <SearchIcon size={20} className="text-[#68788A] mr-2.5 shrink-0" />
                 <input

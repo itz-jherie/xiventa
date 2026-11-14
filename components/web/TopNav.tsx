@@ -39,7 +39,7 @@ export function TopNav({ onSearch }: TopNavProps) {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full h-[72px] bg-white border-b border-[#E8ECEF] transition-colors">
+    <header className="sticky top-0 z-50 w-full h-[72px] bg-white border-b border-[#E9EDF1] transition-colors">
       <div className="max-w-[1200px] h-full mx-auto px-4 sm:px-6 flex items-center justify-between gap-6">
         {/* Left (Node I310:16351;34:285): Logo & Links */}
         <div className="flex items-center gap-10">
@@ -70,7 +70,7 @@ export function TopNav({ onSearch }: TopNavProps) {
         {/* Center: Search Field (Node I310:16351;34:304, 400px wide, 44px high, r: 999, bg: #F4F6F8, border: 1px #E8ECEF) */}
         <form
           onSubmit={handleSearchSubmit}
-          className="hidden lg:flex items-center w-[400px] h-[44px] bg-[#F4F6F8] rounded-full pl-4 pr-1.5 border border-[#E8ECEF] focus-within:ring-2 focus-within:ring-[#E22765]/20 focus-within:bg-white focus-within:border-[#E22765] transition-all"
+          className="hidden lg:flex items-center w-[400px] h-[44px] bg-[#F4F6F8] rounded-full pl-4 pr-1.5 border border-[#E9EDF1] focus-within:ring-2 focus-within:ring-[#E22765]/20 focus-within:bg-white focus-within:border-[#E22765] transition-all"
         >
           <SearchIcon size={20} className="text-[#68788A] shrink-0 mr-2.5" />
           <input

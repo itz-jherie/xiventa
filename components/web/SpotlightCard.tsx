@@ -69,7 +69,7 @@ export function SpotlightCard({ story, className = "" }: SpotlightCardProps) {
         </div>
 
         {/* Quick Action Button & Social Tools */}
-        <div className="flex items-center justify-between gap-1.5 pt-1.5 border-t border-white/15">
+        <div className="flex items-center justify-between gap-1.5 pt-1">
           <Link
             href="/events"
             className="flex-1 py-1.5 px-3 rounded-full bg-brand-500 hover:bg-brand-600 text-white text-[11px] font-bold text-center tracking-wide transition shadow-xs"

@@ -122,8 +122,8 @@ export function WebFooter() {
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        {/* Bottom Bar (Node I310:17103;... Bottom: border-t border-white/10) */}
+        <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-[12px] text-[#b4bfca]">
             © 2026 Xiventa. Made in Lagos.
           </p>

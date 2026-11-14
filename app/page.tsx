@@ -119,32 +119,44 @@ export default function HomePage() {
 
           {/* Hero Right: Authentic Mode Tiles (Node 310:16450, w: 400, h: 296, gap: 16) */}
           <div className="lg:col-span-4 flex flex-col gap-4 w-full">
-            {/* Mode Tile: Events (Node 310:16451, w: 400, h: 140, cornerRadius: 12) */}
+            {/* Mode Tile: Events (Node 310:16451, w: 400, h: 140, cornerRadius: 12, bg: #FFEEDF) */}
             <Link
               href="/events"
-              className="group relative block w-full h-[140px] rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-all active:scale-[0.99]"
+              className="group relative block w-full h-[140px] rounded-xl overflow-hidden bg-[#FFEEDF] transition-all duration-200 active:scale-[0.99] select-none"
             >
-              <Image
-                src="/images/mode-events.svg"
-                alt="Events"
-                fill
-                priority
-                className="object-cover group-hover:scale-102 transition-transform duration-300"
-              />
+              <div className="absolute -left-6 -top-7.5 w-[163px] h-[153px] pointer-events-none group-hover:scale-105 transition-transform duration-300 ease-out">
+                <Image
+                  src="/images/illustration-events.svg"
+                  alt=""
+                  width={163}
+                  height={153}
+                  className="w-full h-full object-contain"
+                  priority
+                />
+              </div>
+              <span className="absolute bottom-5 right-6 text-[20px] font-bold text-[#172B3A] tracking-[-0.02em] leading-[26px]">
+                Events
+              </span>
             </Link>
 
-            {/* Mode Tile: Places (Node 310:16463, w: 400, h: 140, cornerRadius: 12) */}
+            {/* Mode Tile: Places (Node 310:16463, w: 400, h: 140, cornerRadius: 12, bg: #F1EEFF) */}
             <Link
               href="/places"
-              className="group relative block w-full h-[140px] rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-all active:scale-[0.99]"
+              className="group relative block w-full h-[140px] rounded-xl overflow-hidden bg-[#F1EEFF] transition-all duration-200 active:scale-[0.99] select-none"
             >
-              <Image
-                src="/images/mode-places.svg"
-                alt="Places"
-                fill
-                priority
-                className="object-cover group-hover:scale-102 transition-transform duration-300"
-              />
+              <div className="absolute -left-4 -top-7.5 w-[132px] h-[131px] pointer-events-none group-hover:scale-105 transition-transform duration-300 ease-out">
+                <Image
+                  src="/images/illustration-places.svg"
+                  alt=""
+                  width={132}
+                  height={131}
+                  className="w-full h-full object-contain"
+                  priority
+                />
+              </div>
+              <span className="absolute bottom-5 right-6 text-[20px] font-bold text-[#172B3A] tracking-[-0.02em] leading-[26px]">
+                Places
+              </span>
             </Link>
           </div>
         </section>

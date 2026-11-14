@@ -27,6 +27,7 @@ export * from "./GridIcon";
 export * from "./HangerIcon";
 export * from "./HeartIcon";
 export * from "./HeartFilledIcon";
+export * from "./HomeIcon";
 export * from "./ImageIcon";
 export * from "./InfoIcon";
 export * from "./LaptopIcon";

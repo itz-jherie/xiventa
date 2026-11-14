@@ -20,7 +20,7 @@ export function EventCard({ event, className = "" }: EventCardProps) {
   const formattedPrice = event.isFree ? "Free" : event.displayPrice.replace(/^From\s+/i, "");
 
   return (
-    <div className={`relative w-full sm:w-[282px] h-[265px] shrink-0 select-none group ${className}`}>
+    <div className={`relative w-[282px] h-[265px] shrink-0 select-none group ${className}`}>
       {/* 1. Ticket Card Content (Clipped to inward notch silhouette via CSS path) */}
       <article
         className="w-full h-full bg-[#FDFFF0] flex flex-col justify-between transition-all duration-300 group-hover:brightness-98"

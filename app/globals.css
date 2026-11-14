@@ -184,3 +184,14 @@ body {
 .tracking-overline {
   letter-spacing: 0.04em; /* +4% for Caption Overline uppercase */
 }
+
+/* Guarantee navbar Get the app button color regardless of :visited, hydration, or extensions */
+a[data-nav-cta="get-the-app"],
+a[data-nav-cta="get-the-app"]:visited {
+  background-color: #E22765 !important;
+  color: #FFFFFF !important;
+}
+a[data-nav-cta="get-the-app"]:hover {
+  background-color: #C81E57 !important;
+  color: #FFFFFF !important;
+}

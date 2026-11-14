@@ -93,7 +93,9 @@ export function TopNav({ onSearch }: TopNavProps) {
 
           <Link
             href="/m"
-            className="h-[44px] px-5 rounded-xl bg-[#E22765] hover:bg-[#C81E57] text-white font-medium text-[14px] flex items-center justify-center shadow-xs transition active:scale-98"
+            data-nav-cta="get-the-app"
+            style={{ backgroundColor: "#E22765", color: "#FFFFFF" }}
+            className="h-[44px] px-5 rounded-xl !bg-[#E22765] hover:!bg-[#C81E57] !text-white font-medium text-[14px] flex items-center justify-center shadow-xs transition active:scale-98"
           >
             <span>Get the app</span>
           </Link>

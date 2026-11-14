@@ -67,10 +67,10 @@ export function TopNav({ onSearch }: TopNavProps) {
           </nav>
         </div>
 
-        {/* Center: Search Field (Node I310:16351;34:304, 400px wide, 44px high, r: 999, bg: #F4F6F8, border: 1px #E8ECEF) */}
+        {/* Center: Search Field (Node I310:16351;34:304, 400px wide, 44px high, r: 999, bg: #F4F6F8, border: 1px #E9EDF1, Filter button visible: false) */}
         <form
           onSubmit={handleSearchSubmit}
-          className="hidden lg:flex items-center w-[400px] h-[44px] bg-[#F4F6F8] rounded-full pl-4 pr-1.5 border border-[#E9EDF1] focus-within:ring-2 focus-within:ring-[#E22765]/20 focus-within:bg-white focus-within:border-[#E22765] transition-all"
+          className="hidden lg:flex items-center w-[400px] h-[44px] bg-[#F4F6F8] rounded-full px-4 border border-[#E9EDF1] focus-within:ring-2 focus-within:ring-[#E22765]/20 focus-within:bg-white focus-within:border-[#E22765] transition-all"
         >
           <SearchIcon size={20} className="text-[#68788A] shrink-0 mr-2.5" />
           <input
@@ -80,13 +80,6 @@ export function TopNav({ onSearch }: TopNavProps) {
             placeholder="Search events, places or artists"
             className="w-full bg-transparent text-[14px] text-[#172B3A] placeholder:text-[#68788A] focus:outline-none"
           />
-          <button
-            type="submit"
-            aria-label="Filter events"
-            className="w-9 h-9 rounded-full bg-[#E22765] text-white flex items-center justify-center hover:bg-[#C81E57] transition shadow-xs shrink-0"
-          >
-            <FilterIcon size={16} />
-          </button>
         </form>
 
         {/* Right (Node I310:16351;34:314): Sign in & Get the app */}

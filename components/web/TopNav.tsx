@@ -35,7 +35,7 @@ export function TopNav({ onSearch }: TopNavProps) {
   const navLinks = [
     { label: "Events", href: "/events" },
     { label: "Places", href: "/places" },
-    { label: "For organizers", href: "/organizers" },
+    { label: "Spotlight", href: "/spotlight" },
   ];
 
   return (
@@ -77,7 +77,7 @@ export function TopNav({ onSearch }: TopNavProps) {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search events, places or artists"
+            placeholder="Search events, places and hosts"
             className="w-full bg-transparent text-[14px] text-[#172B3A] placeholder:text-[#68788A] focus:outline-none"
           />
         </form>
@@ -86,17 +86,15 @@ export function TopNav({ onSearch }: TopNavProps) {
         <div className="flex items-center gap-3">
           <Link
             href="/welcome"
-            className="h-[44px] px-4 rounded-xl flex items-center gap-2 text-[14px] font-medium text-[#C81E57] hover:bg-[#FFF1F5] transition"
+            className="h-[44px] px-3 rounded-xl flex items-center text-[14px] font-medium text-[#C81E57] hover:bg-[#FFF1F5] transition"
           >
-            <UserIcon size={16} className="text-[#E22765]" />
             <span>Sign in</span>
           </Link>
 
           <Link
             href="/m"
-            className="h-[44px] px-4 rounded-xl bg-[#E22765] hover:bg-[#C81E57] text-white font-medium text-[14px] flex items-center gap-2 shadow-xs transition active:scale-98"
+            className="h-[44px] px-5 rounded-xl bg-[#E22765] hover:bg-[#C81E57] text-white font-medium text-[14px] flex items-center justify-center shadow-xs transition active:scale-98"
           >
-            <PhoneIcon size={16} />
             <span>Get the app</span>
           </Link>
         </div>

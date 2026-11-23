@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { SpotlightStory } from "@/data";
-import { PlayIcon, BookmarkIcon, ShareIcon } from "@/components/icons";
+import { BookmarkIcon, PlayIcon, ShareIcon } from "@/components/icons";
 
 interface SpotlightCardProps {
   story: SpotlightStory;
@@ -9,120 +9,68 @@ interface SpotlightCardProps {
 }
 
 /**
- * Spotlight Item
- * 1:1 exact match with Figma `Spotlight Item` (Node `310:16728`)
- *
- * Dimensions: 215px x 429px (9:16 vertical reel)
- * Ground truth from Figma export `figma_spotlight_export.png`:
- *  - Top bar: "Spotlight" (text-white font-semibold 12px) + circular play button (white/30 backdrop-blur-md)
- *  - Right rail: Save & Share frosted glass circular buttons with labels underneath
- *  - Bottom area: Creator avatar + name, 2-line caption
- *  - Bottom floating white action card: Date/Status badge, Place/Event title, vibrant pink button ("Get tickets" / "Directions")
+ * Spotlight Item, 1:1 with Figma node 310:16728 (215 x 429). It is a scaled down phone clip, so
+ * the inner type sizes are the Figma values (5.5 to 11 px).
  */
 export function SpotlightCard({ story, className = "" }: SpotlightCardProps) {
-  const isOpenStatus = story.meta?.toUpperCase().startsWith("OPEN");
+  const isPlace = story.actionType === "directions";
+  const titleColor = story.headerTone === "dark" ? "#172B3A" : "#FFFFFF";
 
   return (
-    <article
-      className={`group relative flex-shrink-0 w-[215px] h-[429px] rounded-2xl overflow-hidden shadow-md select-none bg-slate-900 hover:shadow-xl transition-all duration-300 ${className}`}
-    >
-      {/* Background Image / Video Poster */}
-      <Image
-        src={story.imageUrl}
-        alt={story.posterName}
-        fill
-        sizes="215px"
-        className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+    <article className={`relative h-[429px] w-[215px] shrink-0 overflow-hidden bg-[#0E1C27] select-none ${className}`}>
+      <Image src={story.imageUrl} alt="" fill sizes="215px" className="object-cover" />
+      <div
+        className="absolute inset-x-0 bottom-0 h-[242px]"
+        style={{ background: "linear-gradient(180deg, rgba(14,28,39,0) 0%, rgba(14,28,39,0.8) 100%)" }}
       />
 
-      {/* Gradient Scrim (top and bottom for maximum legibility of white elements) */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent via-40% to-black/85 pointer-events-none" />
-
-      {/* Top Header Row (Node I310:16728;... Top) */}
-      <div className="absolute top-3 inset-x-3 flex items-center justify-between z-10 pointer-events-none">
-        <span className="text-[12px] font-semibold text-white tracking-tight drop-shadow-md">
+      {/* Header */}
+      <div className="absolute left-[9px] top-[31px] flex h-[22px] w-[197px] items-center justify-between">
+        <span className="text-[11px] font-bold leading-[14.3px] tracking-[-0.02em]" style={{ color: titleColor }}>
           Spotlight
         </span>
-
-        <button
-          type="button"
-          aria-label="Play spotlight"
-          className="pointer-events-auto w-6 h-6 rounded-full bg-white/30 hover:bg-white/50 text-white flex items-center justify-center backdrop-blur-md transition shadow-xs"
-        >
-          <PlayIcon size={11} className="ml-0.5 fill-white text-white drop-shadow-xs" />
-        </button>
+        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/[0.72]">
+          <PlayIcon size={11} className="text-[#172B3A]" />
+        </span>
       </div>
 
-      {/* Right Rail: Floating Frosted Action Buttons (Save & Share) */}
-      <div className="absolute right-2.5 bottom-[96px] z-20 flex flex-col items-center gap-2.5">
-        {/* Bookmark / Save */}
-        <div className="flex flex-col items-center gap-0.5">
-          <button
-            type="button"
-            aria-label="Save spotlight"
-            className="w-8 h-8 rounded-full bg-white/35 hover:bg-white/55 backdrop-blur-md flex items-center justify-center text-white shadow-sm transition active:scale-95"
-          >
-            <BookmarkIcon size={15} className="text-white drop-shadow-xs" />
-          </button>
-          <span className="text-[9.5px] font-medium text-white drop-shadow-md">
-            Save
-          </span>
-        </div>
-
-        {/* Share */}
-        <div className="flex flex-col items-center gap-0.5">
-          <button
-            type="button"
-            aria-label="Share spotlight"
-            className="w-8 h-8 rounded-full bg-white/35 hover:bg-white/55 backdrop-blur-md flex items-center justify-center text-white shadow-sm transition active:scale-95"
-          >
-            <ShareIcon size={15} className="text-white drop-shadow-xs" />
-          </button>
-          <span className="text-[9.5px] font-medium text-white drop-shadow-md">
-            Share
-          </span>
-        </div>
-      </div>
-
-      {/* Bottom Content Area */}
-      <div className="absolute bottom-0 inset-x-0 p-2.5 flex flex-col gap-1.5 z-10 text-white">
-        {/* Creator Info (Avatar + Name) */}
-        <div className="flex items-center gap-1.5 pr-11">
-          <div
-            className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white shadow-xs shrink-0 ${
-              story.avatarBg || "bg-[#E22765]"
-            }`}
-          >
-            {story.posterInitials}
+      {/* Actions */}
+      <div className="absolute left-[182px] top-[236px] flex w-6 flex-col items-center gap-[8.8px]">
+        {[
+          { label: "Save", Icon: BookmarkIcon },
+          { label: "Share", Icon: ShareIcon },
+        ].map(({ label, Icon }) => (
+          <div key={label} className="flex flex-col items-center gap-[2.2px]">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/[0.72]">
+              <Icon size={13} className="text-[#172B3A]" />
+            </span>
+            <span className="text-[5.5px] leading-[6.6px] text-white">{label}</span>
           </div>
-          <span className="text-[12px] font-bold tracking-tight text-white line-clamp-1 drop-shadow-md">
-            {story.posterName}
+        ))}
+      </div>
+
+      {/* Info */}
+      <div className="absolute left-[9px] top-[289px] flex w-[197px] flex-col gap-[6.6px]">
+        <div className="flex items-center gap-[4.4px]">
+          <span className="flex h-[15px] w-[15px] items-center justify-center rounded-full bg-[#F1EEFF] text-[5.5px] leading-[6.6px] text-[#5B3FD6]">
+            {story.posterInitials}
           </span>
+          <span className="text-[7.15px] leading-[8.8px] text-white">{story.posterName}</span>
         </div>
-
-        {/* Caption (2 lines, padded right so it never overlaps right rail) */}
-        <p className="text-[10.5px] leading-[1.3] text-white/95 line-clamp-2 drop-shadow-md pr-11">
-          {story.caption}
-        </p>
-
-        {/* Floating White Action Card (Figma Node I310:16728;...) */}
-        <div className="mt-0.5 bg-white rounded-xl py-1.5 px-2 flex items-center justify-between gap-1 shadow-lg border border-black/5">
-          <div className="flex flex-col min-w-0 flex-1">
+        <p className="w-40 text-[7.7px] leading-[11px] text-white">{story.caption}</p>
+        <div className="flex h-8 items-center gap-[6.6px] rounded-[8.8px] bg-white p-[6.6px]">
+          <div className="flex min-w-0 flex-1 flex-col gap-[1.1px]">
             <span
-              className={`text-[8.5px] font-bold uppercase tracking-tight whitespace-nowrap overflow-hidden text-ellipsis ${
-                isOpenStatus ? "text-[#067647]" : "text-[#C81E57]"
-              }`}
+              className="truncate text-[5.5px] uppercase leading-[6.6px] tracking-[0.04em]"
+              style={{ color: isPlace ? "#067647" : "#C81E57" }}
             >
               {story.meta}
             </span>
-            <span className="text-[11.5px] font-bold text-[#172B3A] line-clamp-1 leading-snug">
-              {story.posterName}
-            </span>
+            <span className="truncate text-[7.7px] leading-[11px] text-[#172B3A]">{story.posterName}</span>
           </div>
-
           <Link
-            href={story.actionType === "directions" ? "/places" : "/events"}
-            className="shrink-0 px-2 py-1.5 rounded-lg bg-[#E22765] hover:bg-[#C81E57] text-white text-[10px] font-bold transition shadow-xs active:scale-95 whitespace-nowrap"
+            href={isPlace ? "/places" : "/events"}
+            className="flex h-[18px] shrink-0 items-center rounded-[4.4px] bg-[#E22765] px-[6.6px] text-[7.15px] leading-[8.8px] text-white"
           >
             {story.actionLabel}
           </Link>

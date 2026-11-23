@@ -186,12 +186,57 @@ body {
 }
 
 /* Guarantee navbar Get the app button color regardless of :visited, hydration, or extensions */
-a[data-nav-cta="get-the-app"],
+[data-nav-cta="get-the-app"],
 a[data-nav-cta="get-the-app"]:visited {
   background-color: #E22765 !important;
   color: #FFFFFF !important;
 }
-a[data-nav-cta="get-the-app"]:hover {
+[data-nav-cta="get-the-app"]:hover {
   background-color: #C81E57 !important;
   color: #FFFFFF !important;
+}
+
+/* Sign in flyer wall (rule 1): outer columns drift up, the middle one down.
+   One cycle = 5 flyers x (156 + 10 gap) = 830 px, about 24 s, seamless because each column repeats. */
+@keyframes flyer-drift-up {
+  from { transform: translateY(0); }
+  to { transform: translateY(-830px); }
+}
+@keyframes flyer-drift-down {
+  from { transform: translateY(-830px); }
+  to { transform: translateY(0); }
+}
+.flyer-drift-up { animation: flyer-drift-up 24s linear infinite; }
+.flyer-drift-down { animation: flyer-drift-down 24s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .flyer-drift-up, .flyer-drift-down { animation: none; }
+}
+
+/* Install toast entrance */
+@keyframes toast-in {
+  from { opacity: 0; transform: translate(-50%, 12px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* Horizontal card rows scroll by swipe / trackpad without showing a scrollbar */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Never let the page itself scroll sideways. `clip` hides overflow like `hidden`, but unlike
+   `hidden` it doesn't turn the page into a scroll box, so the sticky top nav keeps sticking. */
+html,
+body {
+  overflow-x: clip;
+}
+
+/* Install toast: the event / place Bottom Action Bar only exists on phones. */
+@media (min-width: 768px) {
+  [data-action-bar] {
+    bottom: 16px !important;
+  }
 }

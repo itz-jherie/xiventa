@@ -1,181 +1,214 @@
 "use client";
 
-import { useState, useRef, useEffect, Suspense } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeftIcon, CheckIcon } from "@/components/icons";
+import { AuthNote, AuthScreen, AuthTitle } from "@/components/auth/AuthScreen";
+import { isDesktop, WebAuthShell, WebAuthSmall, WebAuthText, WebAuthTitle, webGhostBtn, webPrimaryBtn } from "@/components/auth/WebAuth";
+import { completeCode, takeReturnTo } from "@/lib/session";
 
-function CodeVerificationContent() {
+const LENGTH = 6;
+const SAMPLE_CODE = "482913";
+
+/** "0803 000 0000" -> "0803 *** 0000" */
+function maskPhone(phone: string) {
+  const d = phone.replace(/\D/g, "");
+  if (d.length < 8) return phone;
+  return `${d.slice(0, 4)} *** ${d.slice(-4)}`;
+}
+
+type CodeState = "typing" | "checking" | "wrong";
+
+/**
+ * Enter the code. Static: any 6 digits are accepted; 000000 shows the Wrong code state.
+ * - Below 768 px: AM04 Code (821:55777) and its states. The code "arrives" and fills in by itself
+ *   after 1.5 s (one-time-code autofill) and checks itself on the sixth digit (rule 1).
+ * - 768 px and up: PW14 Sign in / Enter code (1060:64292), Email code (1060:64546), Wrong code
+ *   (1060:64386). Typed by hand, then Verify and continue.
+ * After the code: new account -> Your name; returning account -> Welcome back (app) or Home (web).
+ */
+function CodeContent() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const phoneParam = searchParams.get("phone") || "0803 000 0000";
+  const params = useSearchParams();
+  const email = params.get("email");
+  const phone = params.get("phone") ?? "0803 000 0000";
+  const isEmail = Boolean(email);
 
-  // 4-digit OTP state
-  const [digits, setDigits] = useState<string[]>(["", "", "", ""]);
-  const [secondsLeft, setSecondsLeft] = useState(42);
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [code, setCode] = useState("");
+  const [state, setState] = useState<CodeState>("typing");
+  const [seconds, setSeconds] = useState(42);
+  const touched = useRef(false);
+  const appInput = useRef<HTMLInputElement>(null);
+  const webInput = useRef<HTMLInputElement>(null);
 
-  // Timer countdown
-  useEffect(() => {
-    if (secondsLeft <= 0) return;
-    const interval = setInterval(() => {
-      setSecondsLeft((prev) => prev - 1);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [secondsLeft]);
-
-  // Handle digit typing & auto-advance
-  const handleDigitChange = (index: number, value: string) => {
-    if (!/^\d*$/.test(value)) return;
-    const char = value.slice(-1);
-    const newDigits = [...digits];
-    newDigits[index] = char;
-    setDigits(newDigits);
-
-    if (char && index < 3) {
-      inputRefs.current[index + 1]?.focus();
-    }
-
-    // If 4 digits entered, auto-verify
-    if (char && index === 3 && newDigits.every((d) => d !== "")) {
-      triggerVerification();
-    }
-  };
-
-  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Backspace" && !digits[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus();
-    }
-  };
-
-  const triggerVerification = () => {
-    setIsVerifying(true);
+  const check = (value: string) => {
+    setState("checking");
     setTimeout(() => {
-      setIsVerifying(false);
-      setIsSuccess(true);
-      setTimeout(() => {
-        router.push("/name");
-      }, 500);
-    }, 600);
+      if (value === "000000") {
+        setState("wrong");
+        return;
+      }
+      const { returning } = completeCode();
+      const desktop = isDesktop();
+      router.push(returning ? (desktop ? takeReturnTo() ?? "/" : "/welcome-back") : "/name");
+    }, 1200);
   };
 
-  const formattedTimer = `0:${secondsLeft < 10 ? `0${secondsLeft}` : secondsLeft}`;
+  const onChange = (value: string) => {
+    touched.current = true;
+    const next = value.replace(/\D/g, "").slice(0, LENGTH);
+    setCode(next);
+    if (state === "wrong") setState("typing");
+    if (next.length === LENGTH && !isDesktop()) check(next);
+  };
+
+  const resend = () => {
+    setSeconds(42);
+    setCode("");
+    setState("typing");
+  };
+
+  useEffect(() => {
+    const desktop = isDesktop();
+    (desktop ? webInput : appInput).current?.focus();
+    if (desktop || isEmail) return;
+    const t = setTimeout(() => {
+      if (touched.current) return;
+      setCode(SAMPLE_CODE);
+      check(SAMPLE_CODE);
+    }, 1500);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isEmail]);
+
+  useEffect(() => {
+    if (seconds <= 0) return;
+    const t = setTimeout(() => setSeconds((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [seconds]);
+
+  const target = isEmail ? email : maskPhone(phone);
+  const wrong = state === "wrong";
+  const changeHref = isEmail ? "/login" : "/welcome";
+  const resendLabel = `Resend in 0:${String(seconds).padStart(2, "0")}`;
+
+  const boxes = (variant: "app" | "web", ref: React.RefObject<HTMLInputElement | null>) => (
+    <div
+      className="relative flex gap-2"
+      onClick={() => {
+        if (wrong) resend();
+        ref.current?.focus();
+      }}
+    >
+      {Array.from({ length: LENGTH }).map((_, i) => {
+        const digit = code[i];
+        const active = state === "typing" && i === code.length;
+        const style =
+          variant === "app"
+            ? {
+                border: wrong ? "2px solid #C0231A" : active ? "2px solid #E22765" : "1px solid rgba(255,255,255,0.18)",
+                backgroundColor: digit ? "rgba(255,255,255,0.14)" : "rgba(255,255,255,0.06)",
+              }
+            : {
+                border: wrong ? "2px solid #C0231A" : active ? "2px solid #E22765" : "1px solid #D5DCE3",
+                backgroundColor: "#FFFFFF",
+              };
+        return (
+          <div
+            key={i}
+            className={`flex h-[60px] flex-1 items-center justify-center rounded-[14px] text-[26px] font-bold ${variant === "app" ? "text-white" : "text-[#172B3A]"}`}
+            style={style}
+          >
+            {digit}
+          </div>
+        );
+      })}
+      <input
+        ref={ref}
+        value={code}
+        onChange={(e) => onChange(e.target.value)}
+        inputMode="numeric"
+        autoComplete="one-time-code"
+        aria-label="6 digit code"
+        maxLength={LENGTH}
+        disabled={state === "checking"}
+        className="absolute inset-0 opacity-0"
+      />
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-start sm:justify-center p-4">
-      {/* Mobile Frame Container (390px x 844px) */}
-      <div className="w-full max-w-[390px] min-h-[640px] flex flex-col justify-between py-6 px-4">
-        {/* Top Header */}
-        <div>
-          <div className="flex items-center justify-between mb-8">
-            <Link
-              href="/welcome"
-              className="w-10 h-10 -ml-2 rounded-full flex items-center justify-center text-[#172B3A] hover:bg-slate-100 transition"
-              aria-label="Go back"
-            >
-              <ArrowLeftIcon size={20} />
-            </Link>
-            <span className="text-[14px] font-semibold text-[#172B3A]">9:41</span>
-            <div className="w-8" />
-          </div>
-
-          {/* Heading */}
-          <div className="space-y-2 mb-8">
-            <h1 className="text-[30px] font-bold text-[#172B3A] tracking-tight leading-tight">
-              Check your texts
-            </h1>
-            <p className="text-[13px] text-[#68788A] leading-relaxed">
-              We sent a 4 digit code to{" "}
-              <span className="font-semibold text-[#172B3A]">{phoneParam}</span>. It
-              fills in by itself when it arrives.
-            </p>
-          </div>
-
-          {/* OTP Digit Boxes */}
-          <div className="flex items-center justify-between gap-3 mb-8">
-            {digits.map((digit, idx) => (
-              <input
-                key={idx}
-                ref={(el) => {
-                  inputRefs.current[idx] = el;
-                }}
-                type="text"
-                inputMode="numeric"
-                maxLength={1}
-                value={digit}
-                onChange={(e) => handleDigitChange(idx, e.target.value)}
-                onKeyDown={(e) => handleKeyDown(idx, e)}
-                disabled={isVerifying || isSuccess}
-                className={`w-[70px] h-[72px] text-center text-[28px] font-bold rounded-2xl border transition-all outline-none ${
-                  digit
-                    ? "border-[#E22765] bg-[#FFF1F5] text-[#172B3A]"
-                    : "border-[#B4BFCA] bg-[#F8FAFC] text-[#172B3A] focus:border-[#E22765] focus:bg-white focus:ring-4 focus:ring-[#E22765]/15"
-                }`}
-              />
-            ))}
-          </div>
-
-          {/* Resend & Change Number Row */}
-          <div className="flex items-center justify-between text-[14px]">
-            {secondsLeft > 0 ? (
-              <span className="text-[#68788A]">Resend in {formattedTimer}</span>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setSecondsLeft(45)}
-                className="font-semibold text-[#E22765] hover:text-[#C81E57] transition"
-              >
-                Resend code
-              </button>
-            )}
-
-            <Link
-              href="/welcome"
-              className="text-[#E22765] font-semibold hover:text-[#C81E57] transition"
-            >
-              Wrong number?
-            </Link>
-          </div>
-
-          {/* Status feedback */}
-          {isVerifying && (
-            <div className="mt-6 flex items-center justify-center gap-2 text-[13px] text-[#68788A]">
-              <span className="w-4 h-4 border-2 border-[#E22765] border-t-transparent rounded-full animate-spin" />
-              <span>Verifying code...</span>
+    <>
+      {/* App (phone web) */}
+      <div className="md:hidden">
+        <AuthScreen fadeHeight={468} panelBottom={40} backHref={changeHref}>
+          <AuthTitle>{wrong ? "That code didn't work" : isEmail ? "Check your email" : "Check your texts"}</AuthTitle>
+          <AuthNote>
+            {wrong
+              ? `Check the 6 digits we sent to ${target} and try again. After 5 wrong codes, sign in pauses for 15 minutes.`
+              : isEmail
+                ? `We sent a 6 digit code to ${target}. Paste it, or tap the code in the email.`
+                : `We sent a 6 digit code to ${target}. It fills in by itself when it arrives.`}
+          </AuthNote>
+          {boxes("app", appInput)}
+          {state === "checking" ? (
+            <p className="text-[14px] leading-4 text-[#B4BFCA]">Checking your code…</p>
+          ) : (
+            <div className="flex h-4 items-center justify-between text-[14px] leading-4">
+              {wrong || seconds === 0 ? (
+                <button type="button" className="text-[#B4BFCA]" onClick={resend}>Send a new code</button>
+              ) : (
+                <span className="text-[#B4BFCA]">{resendLabel}</span>
+              )}
+              <Link href={changeHref} className="font-bold text-[#E22765]">
+                {isEmail ? "Wrong email?" : "Wrong number?"}
+              </Link>
             </div>
           )}
-
-          {isSuccess && (
-            <div className="mt-6 flex items-center justify-center gap-2 text-[13px] text-emerald-600 font-semibold">
-              <CheckIcon size={16} />
-              <span>Verified! Continuing...</span>
-            </div>
-          )}
-        </div>
-
-        {/* Footer Note */}
-        <div className="pt-8 border-t border-slate-100">
-          <p className="text-[13px] text-center text-[#68788A] leading-relaxed">
-            Been here before? You go straight to Home after the code.
-          </p>
-        </div>
+          <p className="text-center text-[13px] leading-[18px] text-[#B4BFCA]">Been here before? You go straight to Home after the code.</p>
+        </AuthScreen>
       </div>
-    </div>
+
+      {/* Web (desktop) */}
+      <div className="hidden md:block">
+        <WebAuthShell>
+          <form
+            className="flex flex-col gap-5"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (state !== "checking") check(code || SAMPLE_CODE);
+            }}
+          >
+            <WebAuthTitle>{wrong ? "That code didn't work" : isEmail ? "Check your email" : "Check your texts"}</WebAuthTitle>
+            <WebAuthText>
+              {wrong
+                ? `Check the 6 digits we sent to ${target} and try again. After 5 wrong codes, sign in pauses for 15 minutes.`
+                : isEmail
+                  ? `We sent a 6 digit code to ${target}. It can take a minute to arrive.`
+                  : `We sent a 6 digit code to ${target}. It fills in by itself if this is your phone.`}
+            </WebAuthText>
+            {boxes("web", webInput)}
+            <button type="submit" className={webPrimaryBtn} disabled={state === "checking"}>
+              {state === "checking" ? "Checking your code…" : "Verify and continue"}
+            </button>
+            {wrong || seconds === 0 ? (
+              <button type="button" className={webGhostBtn} onClick={resend}>Send a new code</button>
+            ) : (
+              <span className={`${webGhostBtn} hover:bg-transparent`}>{resendLabel}</span>
+            )}
+            <Link href={changeHref} className={webGhostBtn}>{isEmail ? "Use a different email" : "Use a different number"}</Link>
+            <WebAuthSmall>Been here before? You go straight back to where you were.</WebAuthSmall>
+          </form>
+        </WebAuthShell>
+      </div>
+    </>
   );
 }
 
-export default function CodeVerificationPage() {
+export default function CodePage() {
   return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen bg-white flex items-center justify-center">
-          <div className="w-6 h-6 border-2 border-[#E22765] border-t-transparent rounded-full animate-spin" />
-        </div>
-      }
-    >
-      <CodeVerificationContent />
+    <Suspense fallback={null}>
+      <CodeContent />
     </Suspense>
   );
 }

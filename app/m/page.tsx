@@ -1,296 +1,276 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
+import { useSettings } from "@/lib/account";
+
+import { useState } from "react";
+import { initialsOf, useSession } from "@/lib/session";
+import { OfflineBanner } from "@/components/pwa/OfflineBanner";
+import { CityPicker } from "@/components/shared/CityPicker";
+import { useToast } from "@/components/shared/Sheet";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { img, pickEvents, pickPlaces } from "@/data";
 import { MobileTabBar } from "@/components/mobile/MobileTabBar";
+import { FeaturedEventCard, ListEventCard } from "@/components/mobile/AppEventCards";
 import { EventCard } from "@/components/web/EventCard";
 import { PlaceCard } from "@/components/web/PlaceCard";
-import { getAllEvents, getAllPlaces } from "@/data";
+import { Chip } from "@/components/shared/Chip";
 import {
-  MapPinIcon,
-  SearchIcon,
+  BallIcon,
+  BellIcon,
+  CandleIcon,
   ChevronDownIcon,
   ChevronRightIcon,
-  BellIcon,
   FilterIcon,
-  SparkleIcon,
   LaptopIcon,
-  BuildingIcon,
+  MapPinIcon,
   MusicIcon,
-  UtensilsIcon,
   PaletteIcon,
+  SearchIcon,
+  SparkleIcon,
+  UtensilsIcon,
 } from "@/components/icons";
 
-/**
- * Mobile Web Home Page
- * 1:1 match with Figma `AM11 Home` (Node `211:827`)
- *
- * Viewport: 390px x 844px mobile canvas
- * Structure:
- *  - App Header: Location ("Mainland") + Bell & User avatar (AO)
- *  - Weekend Banner: Real photo background, "THIS WEEKEND IN LAGOS / Game nights, picnics and rooftops"
- *  - Search: Full rounded pill, "Search events, places and hosts"
- *  - Filter Chips: Active pink "#All" filter + Nightlife, Tech, Faith, Music, Food
- *  - Mode Tiles: Events (#FFEEE7) & Places (#F1EEFF)
- *  - Featured events: Horizontal carousel of ticket cards
- *  - Nightlife and parties: Horizontal carousel
- *  - MobileTabBar fixed at bottom
- */
-export default function MobileHomePage() {
-  const [userNeighborhood, setUserNeighborhood] = useState("Mainland");
-  const [userInitials, setUserInitials] = useState<string | null>("AO");
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [searchQuery, setSearchQuery] = useState("");
+const CHIPS = [
+  { label: "All", Icon: FilterIcon },
+  { label: "Nightlife", Icon: SparkleIcon },
+  { label: "Tech", Icon: LaptopIcon },
+  { label: "Faith", Icon: CandleIcon },
+  { label: "Music", Icon: MusicIcon },
+  { label: "Food & Drink", Icon: UtensilsIcon },
+  { label: "Arts & Culture", Icon: PaletteIcon },
+  { label: "Sports", Icon: BallIcon },
+];
 
-  const events = getAllEvents();
-  const places = getAllPlaces();
-
-  useEffect(() => {
-    try {
-      const stored = sessionStorage.getItem("xiventa_user_neighborhood");
-      if (stored) setUserNeighborhood(stored);
-      const storedInitials = sessionStorage.getItem("xiventa_user_initials");
-      if (storedInitials) setUserInitials(storedInitials);
-    } catch {}
-  }, []);
-
-  const categoryChips = [
-    { label: "Nightlife", icon: SparkleIcon },
-    { label: "Tech", icon: LaptopIcon },
-    { label: "Faith", icon: BuildingIcon },
-    { label: "Music", icon: MusicIcon },
-    { label: "Food", icon: UtensilsIcon },
-    { label: "Art", icon: PaletteIcon },
-  ];
-
-  const filteredEvents = events.filter((evt) => {
-    if (selectedCategory !== "All" && evt.category !== selectedCategory.toLowerCase()) {
-      return false;
-    }
-    if (
-      searchQuery &&
-      !evt.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      !evt.venueName.toLowerCase().includes(searchQuery.toLowerCase())
-    ) {
-      return false;
-    }
-    return true;
-  });
-
-  const nightlifeEvents = events.filter(
-    (e) => e.category === "nightlife" || e.category === "music"
+/** App section header (Figma `Section / …`): padding 24 / 16 / 12, 20 / 26 bold title, "See all" + chevron. */
+function SectionHeader({ title, href = "#", reason, action = true }: { title: string; href?: string; reason?: string; action?: boolean }) {
+  return (
+    <div className="flex flex-col gap-0.5 px-4 pb-3 pt-6">
+      <div className="flex h-[26px] items-center justify-between">
+        <h2 className="text-[20px] font-bold leading-[26px] tracking-[-0.02em] text-[#172B3A]">{title}</h2>
+        {action && (
+          <Link href={href} className="flex items-center gap-0.5 text-[13px] leading-4 text-[#C81E57]">
+            See all
+            <ChevronRightIcon size={16} />
+          </Link>
+        )}
+      </div>
+      {reason && <p className="text-[13px] leading-[15px] text-[#4D5E70]">{reason}</p>}
+    </div>
   );
+}
+
+/** Horizontal card track: 16 px side padding, scrolls sideways like the app carousels. */
+function Track({ gap, children, bottom = 0 }: { gap: number; children: React.ReactNode; bottom?: number }) {
+  return (
+    <div className="overflow-x-auto overflow-y-hidden no-scrollbar" style={{ paddingBottom: bottom, scrollbarWidth: "none" }}>
+      <div className="flex w-max px-4" style={{ gap }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * AM11 Home, 1:1 with Figma frame 211:827 (390 wide, content 4265 high, floating tab bar).
+ * The status bar is device chrome and is not drawn.
+ */
+export default function AppHomePage() {
+  const router = useRouter();
+  const session = useSession();
+  const isGuest = session === null || session?.status === "guest";
+  const settings = useSettings();
+  const side = session?.side ?? "Mainland";
+  // AM11 Home / Guest (453:40092) shows "All of Lagos" and a Sign in button (rule 1: guests can browse).
+  const unread = !isGuest && settings.ready && !settings.notificationsSeen;
+  const areaLabel = isGuest && !session?.side ? "All of Lagos" : side;
+  const [cityOpen, setCityOpen] = useState(false);
+  const { show: toast, node: toastNode } = useToast();
+  const [chip, setChip] = useState("All");
+  const [query, setQuery] = useState("");
+
+  const featured = pickEvents(["the-backyard-party", "picnic-in-the-park", "games-night"]);
+  const nightlife = pickEvents(["saturn-saturday", "abnormal-nightout", "hangover-friday", "friday-rush"]);
+  const tech = pickEvents(["connect-lagos", "emerging-leaders-forum", "define-your-brand"]);
+  const faith = pickEvents(["encounter-night", "sunday-worship-experience", "kingdom-conference"]);
+  const tonight = pickEvents(["friday-rush"]);
+  const weekend = pickEvents(["movie-night-under-the-stars", "sporty-sunday-viewing-party"]);
+  const free = pickEvents(["jersey-creek-picnic", "kids-wonderland-day", "ultimate-game-night"]);
+  const online = pickEvents(["album-listening-live", "midweek-prayer-online"]);
+
+  const placesYoullLike = pickPlaces([["pulse-club", {}], ["cove-bar", {}], ["skyline-lounge", { imageUrl: img("92c79913") }]]);
+  const yourKind = pickPlaces(["art-twenty-one", "bogobiri-house", "hans-and-rene"]);
+  const placesToGo = pickPlaces(["azure-pool-club", "sandbar-beach-club", "terrace-21"]);
+  const nearYou = pickPlaces([
+    ["the-garden-lagos", { imageUrl: img("943ae751") }],
+    ["play-arena", { imageUrl: img("14177d62"), metaLabel: "Arcade · Lekki", distanceKm: 5, distanceLabel: "5 km away" }],
+    "strike-lanes",
+    "azure-pool-club",
+  ]);
 
   return (
-    <div className="min-h-screen bg-[#FBFBFC] flex flex-col items-center pb-24 font-sans selection:bg-[#E22765] selection:text-white overflow-x-hidden">
-      {/* 390px Mobile Frame Shell */}
-      <div className="w-full max-w-[430px] min-h-screen bg-white shadow-sm flex flex-col overflow-x-hidden">
-        {/* 1. App Header (Node 211:827; App Header) */}
-        <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md px-4 pt-3 pb-2.5 border-b border-slate-100 flex items-center justify-between">
-          {/* Location Selector */}
-          <Link
-            href="/side-of-lagos"
-            className="flex items-center gap-1.5 hover:opacity-80 transition"
-          >
-            <MapPinIcon size={18} className="text-[#E22765]" />
-            <span className="text-[16px] font-bold text-[#172B3A]">
-              {userNeighborhood}
-            </span>
-            <ChevronDownIcon size={16} className="text-[#68788A]" />
+    <div className="mx-auto min-h-screen w-full max-w-[390px] overflow-x-hidden bg-white pb-[108px] text-[#172B3A]">
+      {/* Header */}
+      <header className="flex h-[68px] items-center justify-between p-4">
+        <button type="button" onClick={() => setCityOpen(true)} className="flex items-center gap-1.5">
+          <MapPinIcon size={20} className="text-[#E22765]" />
+          <span className="text-[17px] font-bold leading-[22px] tracking-[-0.01em]">{areaLabel}</span>
+          <ChevronDownIcon size={18} className="text-[#172B3A]" />
+        </button>
+        <div className="flex items-center gap-2">
+          <Link href={isGuest ? "/welcome" : "/notifications"} aria-label={unread ? "Notifications, 1 unread" : "Notifications"} className="relative flex h-9 w-9 items-center justify-center rounded-full border border-[#D5DCE3] bg-white">
+            <BellIcon size={20} className="text-[#172B3A]" />
+            {unread && <span className="absolute left-[25px] top-0.5 h-[9px] w-[9px] rounded-full border-[1.5px] border-white bg-[#E22765]" />}
           </Link>
-
-          {/* Right: Notifications & User Avatar */}
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              aria-label="Notifications"
-              className="relative w-9 h-9 rounded-full bg-[#F4F6F8] hover:bg-slate-200/70 flex items-center justify-center text-[#172B3A] transition"
-            >
-              <BellIcon size={18} />
-              <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#E22765] ring-2 ring-white" />
-            </button>
-
-            <Link
-              href="/welcome"
-              className="w-9 h-9 rounded-full bg-[#EDE9FE] text-[#6D28D9] font-bold text-[13px] flex items-center justify-center shadow-xs"
-            >
-              {userInitials || "AO"}
+          {isGuest ? (
+            <Link href="/welcome" className="flex h-8 items-center rounded-[8px] bg-[#E22765] px-3 text-[13px] leading-4 text-white">
+              Sign in
             </Link>
-          </div>
-        </header>
-
-        {/* Scrollable Feed */}
-        <main className="flex-1 px-4 py-3 space-y-4">
-          {/* 2. Weekend Banner (Node 211:827; Banner, h: 84px) */}
-          <div className="relative h-[84px] rounded-2xl overflow-hidden shadow-sm flex flex-col justify-end p-3.5">
-            <Image
-              src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80"
-              alt="Weekend in Lagos"
-              fill
-              sizes="390px"
-              className="object-cover"
-              priority
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/30 pointer-events-none" />
-
-            <div className="relative z-10 text-white">
-              <span className="block text-[10px] font-bold tracking-wider text-[#FFB6CE] uppercase mb-0.5">
-                THIS WEEKEND IN LAGOS
-              </span>
-              <h2 className="text-[15.5px] font-bold leading-tight drop-shadow-sm">
-                Game nights, picnics and rooftops
-              </h2>
-            </div>
-          </div>
-
-          {/* 3. Search Bar (Node 211:827; Search) */}
-          <div className="relative">
-            <SearchIcon
-              size={18}
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#68788A]"
-            />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search events, places and hosts"
-              className="w-full h-11 pl-10 pr-4 bg-[#F4F6F8] rounded-full text-[14px] text-[#172B3A] placeholder:text-[#68788A] focus:outline-none focus:ring-2 focus:ring-[#E22765]/20 focus:bg-white border border-transparent focus:border-[#E22765] transition"
-            />
-          </div>
-
-          {/* 4. Filter Chips (Node 211:827; Chips) */}
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 -mx-4 px-4 select-none">
-            {/* Active All chip with Filter Icon */}
-            <button
-              type="button"
-              onClick={() => setSelectedCategory("All")}
-              className={`px-3.5 py-1.5 rounded-full text-[13px] font-bold whitespace-nowrap transition-colors flex items-center gap-1.5 shadow-xs ${
-                selectedCategory === "All"
-                  ? "bg-[#E22765] text-white"
-                  : "bg-white border border-[#E9EDF1] text-[#4D5E70] hover:bg-slate-50"
-              }`}
-            >
-              <FilterIcon size={14} className={selectedCategory === "All" ? "text-white" : "text-[#68788A]"} />
-              <span>All</span>
-            </button>
-
-            {categoryChips.map((chip) => {
-              const Icon = chip.icon;
-              const isActive = selectedCategory === chip.label;
-              return (
-                <button
-                  key={chip.label}
-                  type="button"
-                  onClick={() => setSelectedCategory(chip.label)}
-                  className={`px-3.5 py-1.5 rounded-full text-[13px] font-medium whitespace-nowrap transition-colors flex items-center gap-1.5 ${
-                    isActive
-                      ? "bg-[#E22765] text-white font-bold shadow-xs"
-                      : "bg-white border border-[#E9EDF1] text-[#4D5E70] hover:bg-slate-50"
-                  }`}
-                >
-                  <Icon size={14} className={isActive ? "text-white" : "text-[#68788A]"} />
-                  <span>{chip.label}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* 5. Mode Tiles (Node 211:827; Mode tiles, h: 72px) */}
-          <div className="grid grid-cols-2 gap-3 pt-1">
-            {/* Events Tile */}
-            <Link
-              href="/events"
-              className="h-[72px] rounded-2xl bg-[#FFEEE7] p-3 flex items-center justify-between relative overflow-hidden shadow-xs hover:opacity-95 transition"
-            >
-              <span className="text-[15px] font-bold text-[#172B3A]">
-                Events
-              </span>
-              <div className="relative w-12 h-12 shrink-0">
-                <Image
-                  src="/images/mode-events.svg"
-                  alt="Events illustration"
-                  fill
-                  className="object-contain"
-                />
-              </div>
+          ) : (
+            <Link href="/account" aria-label="Profile" className="flex h-9 w-9 items-center justify-center rounded-full bg-[#F1EEFF] text-[13px] leading-4 text-[#5B3FD6]">
+              {session ? initialsOf(session.name) : ""}
             </Link>
+          )}
+        </div>
+      </header>
 
-            {/* Places Tile */}
-            <Link
-              href="/places"
-              className="h-[72px] rounded-2xl bg-[#F1EEFF] p-3 flex items-center justify-between relative overflow-hidden shadow-xs hover:opacity-95 transition"
-            >
-              <span className="text-[15px] font-bold text-[#172B3A]">
-                Places
-              </span>
-              <div className="relative w-12 h-12 shrink-0">
-                <Image
-                  src="/images/mode-places.svg"
-                  alt="Places illustration"
-                  fill
-                  className="object-contain"
-                />
-              </div>
-            </Link>
-          </div>
+      <OfflineBanner />
 
-          {/* 6. Section: Featured Events (Node 211:827; Section / Featured events & Featured carousel) */}
-          <div className="space-y-3 pt-2">
-            <div className="flex items-center justify-between">
-              <h3 className="text-[18px] font-bold text-[#172B3A]">
-                Featured events
-              </h3>
-              <Link
-                href="/events"
-                className="text-[13px] font-semibold text-[#E22765] hover:text-[#C81E57]"
-              >
-                See all
-              </Link>
-            </div>
-
-            {/* Horizontal Ticket Carousel */}
-            <div className="flex items-center gap-3.5 overflow-x-auto no-scrollbar pb-2 -mx-4 px-4 select-none">
-              {filteredEvents.map((evt) => (
-                <EventCard
-                  key={evt.id}
-                  event={evt}
-                  className="w-[282px] shrink-0"
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* 7. Section: Nightlife and parties (Node 211:827; Section / Nightlife and parties) */}
-          <div className="space-y-3 pt-2">
-            <div className="flex items-center justify-between">
-              <h3 className="text-[18px] font-bold text-[#172B3A]">
-                Nightlife and parties
-              </h3>
-              <Link
-                href="/events"
-                className="text-[#E22765] hover:opacity-80 transition"
-              >
-                <ChevronRightIcon size={18} />
-              </Link>
-            </div>
-
-            {/* Horizontal Places/Events Carousel */}
-            <div className="flex items-center gap-3.5 overflow-x-auto no-scrollbar pb-2 -mx-4 px-4 select-none">
-              {places.slice(0, 4).map((plc) => (
-                <PlaceCard
-                  key={plc.id}
-                  place={plc}
-                  className="w-[282px] shrink-0"
-                />
-              ))}
-            </div>
-          </div>
-        </main>
-
-        {/* 8. Fixed Bottom Tab Bar (Node 211:827; Tab Bar) */}
-        <MobileTabBar />
+      {/* Promo banner */}
+      <div className="px-4 pb-3">
+        <Link href="/events?date=weekend" className="relative flex h-[72px] flex-col justify-center gap-0.5 overflow-hidden rounded-[12px] px-4 py-3">
+          <Image src={img("6b030ea9")} alt="" fill sizes="358px" className="object-cover" />
+          <span className="absolute inset-0" style={{ background: "linear-gradient(90deg, rgba(10,15,31,0.85) 0%, rgba(10,15,31,0) 75%)" }} />
+          <span className="relative text-[10px] uppercase leading-3 tracking-[0.04em] text-[#B4BFCA]">This weekend in Lagos</span>
+          <span className="relative text-[16px] font-bold leading-6 tracking-[-0.01em] text-white">Game nights, picnics and rooftops</span>
+        </Link>
       </div>
+
+      {/* Search */}
+      <form
+        className="px-4 py-3"
+        role="search"
+        onSubmit={(e) => {
+          e.preventDefault();
+          router.push(query.trim() ? `/search?q=${encodeURIComponent(query.trim())}` : "/search");
+        }}
+      >
+        <div className="flex h-12 items-center gap-2 rounded-full border border-[#E9EDF1] bg-[#F4F6F8] pl-4 pr-1.5">
+          <SearchIcon size={20} className="shrink-0 text-[#68788A]" />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => router.push("/search")}
+            placeholder="Search events, places and hosts"
+            aria-label="Search events, places and hosts"
+            className="h-5 w-full bg-transparent text-[14px] leading-5 placeholder:text-[#68788A] focus:outline-none"
+          />
+        </div>
+      </form>
+
+      {/* Chips */}
+      <div className="overflow-x-auto overflow-y-hidden no-scrollbar" style={{ scrollbarWidth: "none" }}>
+        <div className="flex w-max gap-2 p-4">
+          {CHIPS.map(({ label, Icon }) => (
+            <Chip
+              key={label}
+              label={label}
+              selected={chip === label}
+              onClick={() => setChip(label)}
+              leadingIcon={<Icon size={16} className={chip === label ? "text-white" : "text-[#68788A]"} />}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Mode tiles */}
+      <div className="flex gap-3.5 px-4">
+        <Link href="/m/events" className="relative h-[72px] w-[172px] overflow-hidden rounded-[12px]">
+          <Image src="/images/mode-events-mobile.svg" alt="" fill className="object-fill" />
+          <span className="absolute left-[17px] top-[27px] text-[14px] leading-[18px] text-[#172B3A]">Events</span>
+        </Link>
+        <Link href="/m/places" className="relative h-[72px] w-[172px] overflow-hidden rounded-[12px]">
+          <Image src="/images/mode-places-mobile.svg" alt="" fill className="object-fill" />
+          <span className="absolute left-[19px] top-[27px] text-[14px] leading-[18px] text-[#172B3A]">Places</span>
+        </Link>
+      </div>
+
+      <SectionHeader title="Featured events" action={false} />
+      <Track gap={14}>
+        {featured.map((e) => (
+          <FeaturedEventCard key={e.id} event={e} showVenue={e.slug === "games-night"} />
+        ))}
+      </Track>
+
+      <p className="px-4 pt-7 text-[10px] uppercase leading-3 tracking-[0.04em] text-[#4D5E70]">Picked for your interests</p>
+
+      <SectionHeader title="Nightlife and parties" />
+      <Track gap={12} bottom={20}>
+        {nightlife.map((e) => <EventCard key={e.id} event={e} variant="compact" />)}
+      </Track>
+
+      <SectionHeader title="Places you'll like" />
+      <Track gap={12}>
+        {placesYoullLike.map((p) => <PlaceCard key={p.id} place={p} variant="compact" />)}
+      </Track>
+
+      <SectionHeader title="Tech and business" />
+      <Track gap={12} bottom={20}>
+        {tech.map((e) => <EventCard key={e.id} event={e} variant="compact" />)}
+      </Track>
+
+      <SectionHeader title="Faith and spirituality" />
+      <Track gap={12} bottom={20}>
+        {faith.map((e) => <EventCard key={e.id} event={e} variant="compact" />)}
+      </Track>
+
+      <div className="pl-2 pt-2">
+        <Link href="/interests" className="inline-flex h-8 items-center gap-2 rounded-[8px] px-3 text-[13px] leading-4 text-[#C81E57]">
+          Edit your interests
+          <ChevronRightIcon size={16} />
+        </Link>
+      </div>
+
+      <SectionHeader title="Your kind of place" action={false} reason="Because you went to Nok by Alara. Only you see this." />
+      <Track gap={12}>
+        {yourKind.map((p) => <PlaceCard key={p.id} place={p} variant="compact" />)}
+      </Track>
+
+      <SectionHeader title={isGuest && !session?.side ? "Tonight in Lagos" : `Tonight on the ${side}`} />
+      <div className="flex flex-col gap-3 px-4">
+        {tonight.map((e) => <ListEventCard key={e.id} event={e} />)}
+      </div>
+
+      <SectionHeader title="Places to go" />
+      <Track gap={12}>
+        {placesToGo.map((p) => <PlaceCard key={p.id} place={p} variant="featured" />)}
+      </Track>
+
+      <SectionHeader title={isGuest && !session?.side ? "This weekend in Lagos" : `This weekend on the ${side}`} />
+      <div className="flex flex-col gap-3 px-4">
+        {weekend.map((e) => <ListEventCard key={e.id} event={e} showRepeatAndAge={false} />)}
+      </div>
+
+      <SectionHeader title="Free this week" />
+      <Track gap={12} bottom={20}>
+        {free.map((e) => <EventCard key={e.id} event={e} variant="compact" />)}
+      </Track>
+
+      <SectionHeader title="Online and hybrid" />
+      <Track gap={12} bottom={20}>
+        {online.map((e) => <EventCard key={e.id} event={e} variant="compact" />)}
+      </Track>
+
+      <SectionHeader title="Places near you" />
+      <Track gap={12}>
+        {nearYou.map((p) => <PlaceCard key={p.id} place={p} variant="compact" />)}
+      </Track>
+
+      <MobileTabBar />
+      <CityPicker open={cityOpen} onClose={() => setCityOpen(false)} toast={toast} />
+      {toastNode}
     </div>
   );
 }

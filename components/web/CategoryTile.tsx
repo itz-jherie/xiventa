@@ -6,7 +6,7 @@ import {
   UtensilsIcon,
   SparkleIcon,
   UsersIcon,
-  HeartIcon,
+  BalloonIcon,
   SunIcon,
   LaptopIcon,
   SmileIcon,
@@ -52,7 +52,7 @@ export function CategoryTile({ category, isActive = false }: CategoryTileProps) 
       case "faith":
         return <CandleIcon size={24} />;
       case "family":
-        return <HeartIcon size={24} />;
+        return <BalloonIcon size={24} />;
       case "learning":
         return <GraduationCapIcon size={24} />;
       case "community":
@@ -68,20 +68,21 @@ export function CategoryTile({ category, isActive = false }: CategoryTileProps) 
 
   return (
     <Link
-      href={`/events?category=${category.slug}`}
-      className="group flex flex-col items-center gap-1.5 w-[64px] shrink-0 select-none transition-transform hover:-translate-y-0.5"
+      href={`/category/${category.slug}`}
+      className="group flex flex-col items-center gap-1.5 w-[64px] shrink-0 select-none"
     >
       <div
-        className={`w-[52px] h-[52px] rounded-xl flex items-center justify-center transition-all duration-200 shadow-2xs group-hover:shadow-sm ${category.bgTint} ${category.iconColor} ${
-          isActive ? "ring-2 ring-[#E22765] scale-105" : ""
+        className={`w-[52px] h-[52px] rounded-[12px] flex items-center justify-center ${
+          isActive ? "ring-2 ring-[#E22765]" : ""
         }`}
+        style={{ backgroundColor: category.tileBg, color: category.iconColor }}
       >
         {getCategoryIcon(category.slug)}
       </div>
 
       <span
-        className={`text-[12px] text-center font-normal truncate w-full ${
-          isActive ? "text-[#E22765] font-bold" : "text-[#4D5E70] group-hover:text-[#172B3A]"
+        className={`text-[12px] leading-4 text-center truncate w-full ${
+          isActive ? "text-[#E22765]" : "text-[#4D5E70] group-hover:text-[#172B3A]"
         }`}
       >
         {category.name}

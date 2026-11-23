@@ -1,60 +1,33 @@
 import { SpotlightStory } from "./types";
+import { img } from "./events";
 
+const carnival: Omit<SpotlightStory, "id"> = {
+  posterName: "Lagoon Carnival",
+  posterInitials: "OC",
+  caption: "Three stages, one night. Carnival costumes welcome, glitter encouraged.",
+  meta: "SAT 29 NOV · 8 PM",
+  actionLabel: "Get tickets",
+  actionType: "tickets",
+  imageUrl: img("bf806b66"),
+  headerTone: "light",
+};
+
+const garden: Omit<SpotlightStory, "id"> = {
+  posterName: "The Garden Lagos",
+  posterInitials: "GL",
+  caption: "Acoustic Fridays in the courtyard. Come early for a table under the lights.",
+  meta: "OPEN NOW · CLOSES 11 PM",
+  actionLabel: "Directions",
+  actionType: "directions",
+  imageUrl: img("943ae751"),
+  headerTone: "dark",
+};
+
+/** PW01 Spotlight strip: five clips alternating as in Figma. */
 export const SPOTLIGHT_STORIES: SpotlightStory[] = [
-  {
-    id: "spotlight-lagoon-carnival",
-    posterName: "Lagoon Carnival",
-    posterInitials: "LC",
-    caption: "Three stages, one night. Carnival costumes welcome, glitter encouraged.",
-    meta: "SAT 29 NOV · 8 PM",
-    actionLabel: "Get tickets",
-    actionType: "tickets",
-    imageUrl: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80",
-    avatarBg: "bg-gradient-to-tr from-brand-600 to-amber-500",
-  },
-  {
-    id: "spotlight-the-garden-lagos",
-    posterName: "The Garden Lagos",
-    posterInitials: "GL",
-    caption: "Acoustic Fridays in the courtyard. Come early for a table under the lights.",
-    meta: "OPEN NOW · CLOSES 11 PM",
-    actionLabel: "Directions",
-    actionType: "directions",
-    imageUrl: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80",
-    avatarBg: "bg-gradient-to-tr from-emerald-600 to-teal-400",
-  },
-  {
-    id: "spotlight-skyline-rooftop",
-    posterName: "Skyline Lounge",
-    posterInitials: "SL",
-    caption: "Panoramic Atlantic views with live guest DJs rotating till dawn.",
-    meta: "FRI 24 OCT · 10 PM",
-    actionLabel: "Get tickets",
-    actionType: "tickets",
-    imageUrl: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=600&q=80",
-    avatarBg: "bg-gradient-to-tr from-purple-600 to-pink-500",
-  },
-  {
-    id: "spotlight-outdoor-picnic",
-    posterName: "Lagos Outdoor Club",
-    posterInitials: "OC",
-    caption: "Sunsets over the bridge, open lawn games and acoustic jam circles.",
-    meta: "SUN 26 OCT · 1 PM",
-    actionLabel: "Directions",
-    actionType: "directions",
-    imageUrl: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&w=600&q=80",
-    avatarBg: "bg-gradient-to-tr from-amber-500 to-orange-400",
-  },
-  {
-    id: "spotlight-sound-hub",
-    posterName: "Sound Hub Live",
-    posterInitials: "SH",
-    caption: "Intimate studio sessions with emerging songwriters and spoken word artists.",
-    meta: "THU 30 OCT · 7 PM",
-    actionLabel: "Get tickets",
-    actionType: "tickets",
-    imageUrl: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80",
-    avatarBg: "bg-gradient-to-tr from-blue-600 to-cyan-400",
-  },
+  { id: "spotlight-1", ...carnival },
+  { id: "spotlight-2", ...garden },
+  { id: "spotlight-3", ...carnival },
+  { id: "spotlight-4", ...garden },
+  { id: "spotlight-5", ...carnival },
 ];
-

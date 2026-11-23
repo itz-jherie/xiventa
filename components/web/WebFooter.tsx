@@ -1,139 +1,72 @@
 import Link from "next/link";
-import { XiventaLogo } from "@/components/icons";
+import { XiventaWordmark } from "@/components/icons/XiventaWordmark";
+import { GetAppButton } from "@/components/pwa/GetAppButton";
+
+const COLUMNS = [
+  {
+    title: "Discover",
+    links: [
+      { label: "Events", href: "/events" },
+      { label: "Places", href: "/places" },
+      { label: "Spotlight", href: "/spotlight" },
+      { label: "Collections", href: "/collections/best-of-this-weekend" },
+    ],
+  },
+  {
+    title: "Host",
+    links: [
+      { label: "For organizers", href: "/organizers" },
+      { label: "List your place", href: "/organizers#list-your-place" },
+      { label: "Host dashboard", href: "/dashboard" },
+      { label: "Host help", href: "/help/host" },
+    ],
+  },
+  {
+    title: "Xiventa",
+    links: [
+      { label: "About", href: "/about" },
+      { label: "Help centre", href: "/help" },
+      { label: "Terms", href: "/terms" },
+      { label: "Privacy", href: "/privacy" },
+      { label: "Refund policy", href: "/refunds" },
+      { label: "Cookies", href: "/cookies" },
+    ],
+  },
+];
 
 /**
- * Web Footer
- * 1:1 match with Figma component `Web Footer` in `PW01 Home` (Node `310:16350`)
- *
- * Background: Dark Navy (#172B3A)
- * Container: 1200px max width centered
+ * Web Footer, 1:1 with the Figma `Web Footer` instance (1440 x 389).
+ * #172B3A, padding 56 / 120 / 32, gap 40. Top row: brand (fills) + three link columns, gap 80.
+ * Bottom row: 1 px border/inverse top line, padding-top 24, copyright + small Get the app button.
  */
 export function WebFooter() {
   return (
-    <footer className="w-full bg-[#172b3a] text-white pt-12 pb-8">
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
-        {/* Top 4 Column Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-10 pb-10">
-          {/* Brand Column */}
-          <div className="md:col-span-2 space-y-4">
-            <Link href="/" className="inline-block" aria-label="Xiventa home">
-              <XiventaLogo width={140} height={32} className="text-white" />
+    <footer className="w-full bg-[#172B3A]">
+      <div className="mx-auto flex max-w-[1440px] flex-col gap-10 px-4 pb-8 pt-14 md:px-[clamp(40px,calc((100%-1200px)/2),120px)]">
+        <div className="flex flex-col gap-10 md:flex-row md:gap-20">
+          <div className="flex flex-1 flex-col gap-4">
+            <Link href="/" aria-label="Xiventa home" className="flex">
+              <XiventaWordmark width={140} height={32} wordColor="#FFFFFF" emblemColor="#FFFFFF" />
             </Link>
-            <p className="text-[14px] leading-relaxed text-[#b4bfca] max-w-xs">
+            <p className="max-w-[280px] text-[14px] leading-5 text-[#B4BFCA]">
               Find what is on in Lagos tonight, this weekend and beyond.
             </p>
           </div>
-
-          {/* Column 1: Discover */}
-          <div className="space-y-3">
-            <h4 className="text-[10px] font-bold text-[#b4bfca] uppercase tracking-wider">
-              Discover
-            </h4>
-            <ul className="space-y-2 text-[14px]">
-              <li>
-                <Link href="/events" className="text-white hover:text-brand-300 transition-colors">
-                  Events
+          {COLUMNS.map((col) => (
+            <div key={col.title} className="flex flex-col gap-3">
+              <h4 className="text-[10px] uppercase leading-3 tracking-[0.04em] text-[#B4BFCA]">{col.title}</h4>
+              {col.links.map((l) => (
+                <Link key={l.label} href={l.href} className="whitespace-nowrap text-[14px] leading-5 text-white hover:text-[#F6A9C3]">
+                  {l.label}
                 </Link>
-              </li>
-              <li>
-                <Link href="/places" className="text-white hover:text-brand-300 transition-colors">
-                  Places
-                </Link>
-              </li>
-              <li>
-                <Link href="/spotlight" className="text-white hover:text-brand-300 transition-colors">
-                  Spotlight
-                </Link>
-              </li>
-              <li>
-                <Link href="/collections" className="text-white hover:text-brand-300 transition-colors">
-                  Collections
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Column 2: Host */}
-          <div className="space-y-3">
-            <h4 className="text-[10px] font-bold text-[#b4bfca] uppercase tracking-wider">
-              Host
-            </h4>
-            <ul className="space-y-2 text-[14px]">
-              <li>
-                <Link href="/organizers" className="text-white hover:text-brand-300 transition-colors">
-                  For organizers
-                </Link>
-              </li>
-              <li>
-                <Link href="/places/new" className="text-white hover:text-brand-300 transition-colors">
-                  List your place
-                </Link>
-              </li>
-              <li>
-                <Link href="/dashboard" className="text-white hover:text-brand-300 transition-colors">
-                  Host dashboard
-                </Link>
-              </li>
-              <li>
-                <Link href="/help/host" className="text-white hover:text-brand-300 transition-colors">
-                  Host help
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Column 3: Xiventa */}
-          <div className="space-y-3">
-            <h4 className="text-[10px] font-bold text-[#b4bfca] uppercase tracking-wider">
-              Xiventa
-            </h4>
-            <ul className="space-y-2 text-[14px]">
-              <li>
-                <Link href="/about" className="text-white hover:text-brand-300 transition-colors">
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link href="/help" className="text-white hover:text-brand-300 transition-colors">
-                  Help centre
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms" className="text-white hover:text-brand-300 transition-colors">
-                  Terms
-                </Link>
-              </li>
-              <li>
-                <Link href="/privacy" className="text-white hover:text-brand-300 transition-colors">
-                  Privacy
-                </Link>
-              </li>
-              <li>
-                <Link href="/refunds" className="text-white hover:text-brand-300 transition-colors">
-                  Refund policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/cookies" className="text-white hover:text-brand-300 transition-colors">
-                  Cookies
-                </Link>
-              </li>
-            </ul>
-          </div>
+              ))}
+            </div>
+          ))}
         </div>
 
-        {/* Bottom Bar (Node I310:17103;... Bottom: border-t border-white/10) */}
-        <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-[12px] text-[#b4bfca]">
-            © 2026 Xiventa. Made in Lagos.
-          </p>
-
-          <Link
-            href="/splash"
-            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-brand-500 hover:bg-brand-600 text-white font-semibold text-[13px] shadow-sm transition active:scale-95"
-          >
-            Get the app
-          </Link>
+        <div className="flex items-start justify-between gap-4 border-t border-white pt-6">
+          <p className="text-[12px] leading-4 text-[#B4BFCA]">© 2026 Xiventa. Made in Lagos.</p>
+          <GetAppButton className="inline-flex h-8 items-center rounded-[8px] bg-[#E22765] px-3 text-[13px] leading-4 text-white hover:bg-[#C81E57]" />
         </div>
       </div>
     </footer>

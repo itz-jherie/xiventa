@@ -58,7 +58,7 @@ export default function SplashPreviewPage() {
       )}
 
       {/* Floating dev dock */}
-      <div className="fixed bottom-6 z-[110] bg-slate-950/90 backdrop-blur-md border border-white/15 px-4 py-2 rounded-full shadow-2xl flex items-center gap-3 text-xs text-white max-w-[90vw] overflow-x-auto">
+      <div className="fixed bottom-6 z-[110] bg-slate-950/90 backdrop-blur-md border border-white/15 px-4 py-2 rounded-full shadow-2xl flex items-center gap-3 text-xs text-white max-w-[90vw] overflow-hidden">
         <span className="font-semibold text-brand-400 whitespace-nowrap">AM01:</span>
         <button
           onClick={() => {

@@ -22,3 +22,4 @@ export function HomeIcon({ size = 24, className = "" }: IconProps) {
     </svg>
   );
 }
+

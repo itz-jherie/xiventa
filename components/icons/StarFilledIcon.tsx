@@ -15,7 +15,7 @@ export function StarFilledIcon({
       className={className}
       {...props}
     >
-      <path d="M15.1395 7.87209L17.9655 13.726L24.425 14.5335L19.6813 18.9744L20.8925 25.333L15.1395 22.2042L9.38648 25.333L10.5976 18.9744L5.85393 14.5335L12.3134 13.726L15.1395 7.87209Z" fill="black" strokeWidth="1.76627" strokeLinecap="round" stroke="currentColor"/>
+      <path d="M12 2.8l2.85 5.78 6.38.93-4.62 4.5 1.09 6.35L12 17.36l-5.7 3 1.09-6.35-4.62-4.5 6.38-.93L12 2.8z" />
     </svg>
   );
 }

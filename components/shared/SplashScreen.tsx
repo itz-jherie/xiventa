@@ -1,109 +1,58 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { XiventaLogo } from "@/components/icons";
 
 interface SplashScreenProps {
   onFinish?: () => void;
-  minDuration?: number; // Duration in ms
-  persistent?: boolean; // When true, doesn't auto-dismiss (for preview / inspection)
+  /** How long the splash stays before fading (ms). */
+  minDuration?: number;
+  /** Keep it on screen (design preview). */
+  persistent?: boolean;
 }
 
 /**
- * AM01 Launch Splash Screen
- * 1:1 match with Figma frame `286:10829` ("AM01 Launch")
- *
- * - Canvas Background: Solid Brand Pink (#E22765 / brand-500)
- * - Brand Mark + Wordmark: Native 155x163 white vector logo perfectly centered
+ * AM01 Launch, 1:1 with Figma frame 286:10829: #E22765, white logo 155 x 163 centred
+ * (top 340 on an 844 high screen). Fades out over 400 ms, tap to skip.
  */
-function getSessionItem(key: string): string | null {
-  try {
-    return typeof window !== "undefined" ? sessionStorage.getItem(key) : null;
-  } catch {
-    return null;
-  }
-}
+export function SplashScreen({ onFinish, minDuration = 1600, persistent = false }: SplashScreenProps) {
+  const [fading, setFading] = useState(false);
+  const [gone, setGone] = useState(false);
+  const finished = useRef(false);
+  const onFinishRef = useRef(onFinish);
+  useEffect(() => {
+    onFinishRef.current = onFinish;
+  });
 
-function setSessionItem(key: string, value: string): void {
-  try {
-    if (typeof window !== "undefined") {
-      sessionStorage.setItem(key, value);
-    }
-  } catch {}
-}
-
-export function SplashScreen({
-  onFinish,
-  minDuration = 2000,
-  persistent = false,
-}: SplashScreenProps) {
-  const [isVisible, setIsVisible] = useState(true);
-  const [isFading, setIsFading] = useState(false);
+  // Fade, then unmount and hand over once (timer or tap, whichever comes first).
+  const finish = () => {
+    if (finished.current) return;
+    finished.current = true;
+    setFading(true);
+    setTimeout(() => {
+      setGone(true);
+      onFinishRef.current?.();
+    }, 400);
+  };
 
   useEffect(() => {
     if (persistent) return;
+    const t = setTimeout(finish, Math.max(minDuration - 400, 200));
+    return () => clearTimeout(t);
+  }, [minDuration, persistent]);
 
-    // Check if the user already saw the splash screen in this browser session
-    const hasSeenSplash = getSessionItem("xiventa_splash_seen");
-    if (hasSeenSplash) {
-      setIsVisible(false);
-      onFinish?.();
-      return;
-    }
-
-    const fadeTimer = setTimeout(() => {
-      setIsFading(true);
-    }, Math.max(minDuration - 400, 300));
-
-    const finishTimer = setTimeout(() => {
-      setIsVisible(false);
-      setSessionItem("xiventa_splash_seen", "true");
-      onFinish?.();
-    }, minDuration);
-
-    return () => {
-      clearTimeout(fadeTimer);
-      clearTimeout(finishTimer);
-    };
-  }, [minDuration, onFinish, persistent]);
-
-  const handleDismiss = () => {
-    if (isFading) return;
-    setIsFading(true);
-    setTimeout(() => {
-      setIsVisible(false);
-      setSessionItem("xiventa_splash_seen", "true");
-      onFinish?.();
-    }, 300);
-  };
-
-  if (!isVisible) return null;
+  if (gone) return null;
 
   return (
     <div
       role="dialog"
-      aria-modal="true"
-      aria-label="Xiventa launch screen"
-      onClick={persistent ? undefined : handleDismiss}
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-brand-500 text-white select-none transition-opacity duration-500 ease-out cursor-pointer ${
-        isFading ? "opacity-0 pointer-events-none" : "opacity-100"
+      aria-label="Xiventa"
+      onClick={persistent ? undefined : finish}
+      className={`fixed inset-0 z-[100] flex items-center justify-center bg-[#E22765] transition-opacity duration-[400ms] ease-out ${
+        fading ? "pointer-events-none opacity-0" : "opacity-100"
       }`}
     >
-      {/* Centered Native Xiventa Logo (155px x 163px exactly as defined in Figma AM01) */}
-      <div className="flex flex-col items-center justify-center transform transition-transform duration-700 ease-out animate-in fade-in zoom-in-95">
-        <XiventaLogo
-          width={155}
-          height={163}
-          className="text-white"
-        />
-      </div>
-
-      {/* Persistent preview indicator for development only */}
-      {persistent && (
-        <div className="absolute bottom-16 px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-[11px] font-semibold text-white tracking-wide">
-          AM01 Launch · Persistent Mode
-        </div>
-      )}
+      <XiventaLogo width={155} height={163} className="text-white" />
     </div>
   );
 }

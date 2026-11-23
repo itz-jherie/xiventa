@@ -2,90 +2,107 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  HomeIcon,
-  PlayIcon,
-  PlusIcon,
-  MapPinIcon,
-  TicketIcon,
-} from "@/components/icons";
+import { useState } from "react";
+import { CreateSheet } from "@/components/mobile/CreateSheet";
+
+/* Tab icons exported from the Figma `Tab Bar` instance in AM11 Home (node 211:827). */
+const HomeFilled = () => (
+  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+    <path fillRule="evenodd" clipRule="evenodd" fill="#E22765" d="M20.3279 6.1361L14.4033 1.23752C12.4075 -0.412508 9.59441 -0.412508 7.59871 1.23752L1.67404 6.1361C0.606626 7.01865 0.000976562 8.35676 0.000976562 9.75293V17.392C0.000976562 19.8726 1.90854 22 4.40098 22H6.60098C7.816 22 8.80098 21.0151 8.80098 19.8V16.2226C8.80098 14.8283 9.84829 13.8146 11.001 13.8146C12.1537 13.8146 13.201 14.8283 13.201 16.2226V19.8C13.201 21.0151 14.1859 22 15.401 22H17.601C20.0935 22 22.001 19.8726 22.001 17.392V9.75293C22.001 8.35677 21.3953 7.01865 20.3279 6.1361Z" />
+  </svg>
+);
+const HomeStroke = () => (
+  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+    <path stroke="#172B3A" strokeWidth="1.8" strokeLinejoin="round" d="M19.8 6.8L13.9 1.9C12.2 0.5 9.8 0.5 8.1 1.9L2.2 6.8C1.3 7.5 0.9 8.6 0.9 9.8V17.4C0.9 19.4 2.4 21.1 4.4 21.1H6.6C7.3 21.1 7.9 20.5 7.9 19.8V16.2C7.9 14.3 9.3 12.9 11 12.9C12.7 12.9 14.1 14.3 14.1 16.2V19.8C14.1 20.5 14.7 21.1 15.4 21.1H17.6C19.6 21.1 21.1 19.4 21.1 17.4V9.8C21.1 8.6 20.7 7.5 19.8 6.8Z" />
+  </svg>
+);
+const Reels = () => (
+  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+    <path fill="#172B3A" d="M14.7559 0C18.7566 0 22 3.24344 22 7.24414V14.7559C22 18.7566 18.7566 22 14.7559 22H7.24414C3.24344 22 1.64218e-07 18.7566 0 14.7559V7.24414C0 3.24344 3.24344 1.64208e-07 7.24414 0H14.7559ZM7.24414 1.87793C4.28066 1.87793 1.87793 4.28066 1.87793 7.24414V14.7559C1.87793 17.7193 4.28066 20.1221 7.24414 20.1221H14.7559C17.7193 20.1221 20.1221 17.7193 20.1221 14.7559V7.24414C20.1221 4.28066 17.7193 1.87793 14.7559 1.87793H7.24414ZM8.79004 5.40039C9.63992 5.18484 10.4089 5.39791 10.959 5.60352C11.5081 5.80883 12.1553 6.13478 12.8389 6.47656L13.1963 6.65527C13.9581 7.0362 14.6668 7.38764 15.1992 7.72852C15.7033 8.05135 16.3664 8.55476 16.708 9.3877L16.7402 9.46973C17.0041 10.1738 17.0334 10.9452 16.8232 11.668C16.5602 12.5722 15.9125 13.1479 15.4189 13.5195C14.9138 13.8998 14.233 14.3046 13.502 14.7422L13.1455 14.9561C12.4362 15.3806 11.7749 15.779 11.2129 16.0391C10.6596 16.295 9.86355 16.5851 8.95801 16.4023L8.68848 16.3369C8.06774 16.1592 7.50645 15.8121 7.06934 15.332C6.44754 14.649 6.28816 13.8171 6.22363 13.2109C6.1581 12.5952 6.16016 11.8228 6.16016 10.9961V10.6045C6.16016 9.8402 6.15778 9.11523 6.21973 8.53223C6.28181 7.94829 6.43498 7.1657 7.00781 6.50195L7.09766 6.40234C7.55328 5.91374 8.1404 5.56533 8.79004 5.40039ZM11.999 8.15625C10.555 7.43423 9.83219 7.07352 9.25195 7.2207C8.93226 7.30192 8.64521 7.47978 8.42969 7.72949C8.03877 8.18271 8.03809 8.99022 8.03809 10.6045V10.9961C8.03809 12.7362 8.0388 13.6066 8.45801 14.0674C8.6886 14.3206 8.99436 14.4937 9.33008 14.5615C9.94072 14.6846 10.6876 14.2385 12.1807 13.3447L12.5381 13.1309C14.0751 12.2109 14.8439 11.7505 15.0205 11.1436C15.1174 10.8101 15.1033 10.454 14.9814 10.1289C14.7595 9.53689 13.958 9.13621 12.3555 8.33496L11.999 8.15625Z" />
+  </svg>
+);
+const Places = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path fill="#172B3A" d="M18.3002 9.8999C18.3001 6.42711 15.5123 3.69991 12.0004 3.69971C8.48829 3.69971 5.69969 6.42698 5.69958 9.8999C5.69958 12.115 7.0259 14.5409 8.68005 16.6606C9.87434 18.1911 11.1577 19.459 11.9994 20.231C12.8411 19.459 14.1261 18.1915 15.3207 16.6606C16.9747 14.541 18.3002 12.1149 18.3002 9.8999ZM20.5004 9.8999C20.5004 12.8846 18.7758 15.809 17.0551 18.0142C15.3033 20.2589 13.3908 21.9638 12.7103 22.5396C12.3002 22.8866 11.6996 22.8866 11.2894 22.5396C10.6089 21.9637 8.69727 20.2588 6.94568 18.0142C5.22483 15.8089 3.50037 12.8848 3.50037 9.8999C3.50047 5.17301 7.31258 1.50049 12.0004 1.50049C16.688 1.50069 20.5003 5.17314 20.5004 9.8999Z" />
+    <path fill="#172B3A" d="M13.4996 9.89971C13.4994 9.07146 12.8279 8.39971 11.9996 8.39971C11.1715 8.39992 10.4998 9.07159 10.4996 9.89971C10.4996 10.728 11.1713 11.3995 11.9996 11.3997C12.828 11.3997 13.4996 10.7281 13.4996 9.89971ZM15.6998 9.89971C15.6998 11.9432 14.043 13.5999 11.9996 13.5999C9.95631 13.5997 8.30037 11.943 8.30037 9.89971C8.30058 7.85656 9.95644 6.2007 11.9996 6.20049C14.0429 6.20049 15.6996 7.85643 15.6998 9.89971Z" />
+  </svg>
+);
+const Ticket = () => (
+  <svg width="22" height="15" viewBox="0 0 22 15" fill="none" aria-hidden="true">
+    <g fill="#172B3A">
+      <path d="M14.2753 3.848C14.6422 3.848 14.9398 3.55541 14.9398 3.19457V0.653434C14.9398 0.292593 14.6422 0 14.2753 0C13.9084 0 13.6109 0.292593 13.6109 0.653434V3.19457C13.6109 3.55541 13.9084 3.848 14.2753 3.848Z" />
+      <path d="M14.2758 5.53955C13.9067 5.53955 13.6121 5.82997 13.6121 6.18572V8.81398C13.6121 9.16974 13.9067 9.46016 14.2758 9.46016C14.6376 9.46016 14.9402 9.16974 14.9402 8.81398V6.18572C14.941 5.82997 14.6383 5.53955 14.2758 5.53955Z" />
+      <path d="M14.2754 11.1523C13.9085 11.1523 13.611 11.4449 13.611 11.8058V14.3469C13.611 14.7078 13.9085 15.0003 14.2754 15.0003C14.6423 15.0003 14.9398 14.7078 14.9398 14.3469V11.8058C14.9406 11.4449 14.643 11.1523 14.2754 11.1523Z" />
+      <path d="M18.962 14.9999H3.03791C1.36281 14.9999 0 13.6597 0 12.0123V9.35863C0 8.99779 0.297516 8.70519 0.664427 8.70519H1.17382C1.84932 8.70519 2.39858 8.1643 2.39858 7.49997C2.39858 6.83565 1.84932 6.29475 1.17382 6.29475H0.664427C0.297516 6.29475 0 6.00215 0 5.64131V2.98765C0 1.34027 1.36355 0 3.03791 0H18.962C20.6371 0 21.9999 1.34027 21.9999 2.98765V5.64131C21.9999 6.00215 21.7024 6.29475 21.3355 6.29475H20.8261C20.1506 6.29475 19.6013 6.83565 19.6013 7.49997C19.6013 8.1643 20.1506 8.70519 20.8261 8.70519H21.3355C21.7024 8.70519 21.9999 8.99779 21.9999 9.35863V12.0123C21.9999 13.6597 20.6371 14.9999 18.962 14.9999ZM1.32885 10.0077V12.0123C1.32885 12.9394 2.09516 13.6931 3.03717 13.6931H18.9613C19.9033 13.6931 20.6696 12.9387 20.6696 12.0123V10.0077C19.3326 9.92929 18.2703 8.83443 18.2703 7.49997C18.2703 6.16551 19.3326 5.07137 20.6696 4.99224V2.98765C20.6696 2.0605 19.9033 1.30687 18.9613 1.30687H3.03791C2.09516 1.30687 1.32885 2.0605 1.32885 2.98765V4.99224C2.66583 5.07137 3.72817 6.16624 3.72817 7.49997C3.72817 8.8337 2.66583 9.92857 1.32885 10.0077Z" />
+    </g>
+  </svg>
+);
+
+/* Active (selected) tab icons from AM58 Spotlight, AM77 My places and AM36 My events. */
+const ReelsFilled = () => (
+  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+    <path fill="#E22765" d="M13.6143 0C18.2455 0 22 3.75451 22 8.38574V13.6143C22 18.2455 18.2455 22 13.6143 22H8.38574C3.75451 22 0 18.2455 0 13.6143V8.38574C0 3.75451 3.75451 0 8.38574 0H13.6143ZM9.75879 7.33203C9.15605 7.37809 8.6125 7.71391 8.30176 8.23242C8.03679 8.67472 8.03711 9.38055 8.03711 10.791C8.03711 12.3111 8.03671 13.0714 8.32129 13.5254C8.65483 14.0574 9.23452 14.3855 9.8623 14.3984C10.398 14.4094 11.0502 14.019 12.3545 13.2383C13.6972 12.4346 14.3691 12.0328 14.6123 11.5469C14.8972 10.9774 14.8711 10.3011 14.5439 9.75488C14.2646 9.28883 13.5644 8.93894 12.165 8.23926C10.9037 7.60858 10.2729 7.29289 9.75879 7.33203Z" />
+  </svg>
+);
+const PlacesFilled = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path fill="#E22765" fillRule="evenodd" clipRule="evenodd" d="M12 1.5C7.3 1.5 3.5 5.2 3.5 9.9C3.5 15.9 10.5 22 11.2 22.6C11.42 22.7968 11.7048 22.9056 12 22.9056C12.2952 22.9056 12.58 22.7968 12.8 22.6C13.5 22 20.5 15.9 20.5 9.9C20.5 5.2 16.7 1.5 12 1.5ZM12 12.8C11.2309 12.8 10.4932 12.4945 9.94939 11.9506C9.40553 11.4068 9.1 10.6691 9.1 9.9C9.1 9.13087 9.40553 8.39325 9.94939 7.84939C10.4932 7.30553 11.2309 7 12 7C12.7691 7 13.5068 7.30553 14.0506 7.84939C14.5945 8.39325 14.9 9.13087 14.9 9.9C14.9 10.6691 14.5945 11.4068 14.0506 11.9506C13.5068 12.4945 12.7691 12.8 12 12.8Z" />
+  </svg>
+);
+const TicketFilled = () => (
+  <svg width="22" height="15" viewBox="0 0 22 15" fill="none" aria-hidden="true">
+    <path fill="#E22765" d="M21.4579 5.46394H22V2.557C22 1.14449 20.8694 0 19.4739 0H15.1941V2.78367C15.1941 3.17895 14.8775 3.49947 14.487 3.49947C14.0965 3.49947 13.7799 3.17895 13.7799 2.78367V0H2.52607C1.13064 0 0 1.14449 0 2.557V5.46394H0.542143C1.65314 5.46394 2.55357 6.3754 2.55357 7.5C2.55357 8.6246 1.65314 9.53605 0.542143 9.53605H0V12.443C0 13.8555 1.13064 15 2.52607 15H13.7791V12.2163C13.7791 11.8211 14.0957 11.5005 14.4862 11.5005C14.8767 11.5005 15.1934 11.8211 15.1934 12.2163V15H19.4731C20.8686 15 21.9992 13.8555 21.9992 12.443V9.53605H21.4571C20.3461 9.53605 19.4456 8.6246 19.4456 7.5C19.4464 6.3754 20.3469 5.46394 21.4579 5.46394ZM15.1957 8.93955C15.1957 9.32927 14.8736 9.6474 14.4886 9.6474C14.0957 9.6474 13.7822 9.32927 13.7822 8.93955V6.06044C13.7822 5.67073 14.0957 5.3526 14.4886 5.3526C14.8736 5.3526 15.1957 5.67073 15.1957 6.06044V8.93955Z" />
+  </svg>
+);
 
 /**
- * Mobile Bottom Tab Bar
- * 1:1 match with Figma `Tab Bar` in `AM11 Home` (Node `211:827`)
- *
- * Dimensions: 390px wide, 68px high (fixed bottom for mobile viewports)
- * Tabs:
- *  1. Tab / Home (Node I211:827;... Home) -> /m
- *  2. Tab / Spotlight (Node I211:827;... Spotlight) -> /spotlight
- *  3. Create (Node I211:827;... Create: 52px floating #E22765 circle with PlusIcon) -> /dashboard
- *  4. Tab / My places (Node I211:827;... My places) -> /places
- *  5. Tab / My events (Node I211:827;... My events) -> /events
+ * App tab bar (rule 15: Home, Spotlight, Create (+), My places, My events), 1:1 with the Figma
+ * `Tab Bar` in AM11 Home: a floating white pill 358 x 68, 16 px from the sides and bottom,
+ * shadow 0 4 16 rgba(23,43,58,0.10), 52 px pink Create button.
+ * Five equal columns so the Create button sits exactly on the bar's centre line (the Figma
+ * space-between layout leaves it 12 px left of centre because the side labels differ in width).
+ * Create opens the EC00 "What do you want to add?" sheet.
  */
 export function MobileTabBar() {
   const pathname = usePathname();
-
-  const isHome = pathname === "/m" || pathname === "/";
-  const isSpotlight = pathname === "/spotlight";
-  const isPlaces = pathname === "/places";
-  const isEvents = pathname === "/events" || pathname.startsWith("/events/");
+  const [createOpen, setCreateOpen] = useState(false);
+  const tabs = [
+    { label: "Home", href: "/m", icon: pathname === "/m" ? <HomeFilled /> : <HomeStroke />, active: pathname === "/m" },
+    { label: "Spotlight", href: "/spotlight", icon: pathname.startsWith("/spotlight") ? <ReelsFilled /> : <Reels />, active: pathname.startsWith("/spotlight") },
+    null,
+    { label: "My places", href: "/my-places", icon: pathname.startsWith("/my-places") ? <PlacesFilled /> : <Places />, active: pathname.startsWith("/my-places") },
+    { label: "My events", href: "/my-events", icon: pathname.startsWith("/my-events") ? <TicketFilled /> : <Ticket />, active: pathname.startsWith("/my-events") },
+  ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 max-w-[430px] mx-auto z-50 h-[68px] bg-white/95 backdrop-blur-md border-t border-slate-100 px-3 flex items-center justify-around shadow-[0_-4px_16px_rgba(0,0,0,0.04)] select-none">
-      {/* 1. Home */}
-      <Link
-        href="/m"
-        className={`flex flex-col items-center justify-center gap-1 w-14 py-1 transition-colors ${
-          isHome ? "text-[#E22765] font-bold" : "text-[#68788A] hover:text-[#172B3A]"
-        }`}
-      >
-        <HomeIcon size={20} className={isHome ? "text-[#E22765] stroke-[2.2]" : "text-[#68788A]"} />
-        <span className="text-[10px] tracking-tight">Home</span>
-      </Link>
-
-      {/* 2. Spotlight */}
-      <Link
-        href="/spotlight"
-        className={`flex flex-col items-center justify-center gap-1 w-14 py-1 transition-colors ${
-          isSpotlight ? "text-[#E22765] font-bold" : "text-[#68788A] hover:text-[#172B3A]"
-        }`}
-      >
-        <div className="w-5 h-5 rounded-full border-[1.8px] border-current flex items-center justify-center">
-          <PlayIcon size={10} className="ml-0.5 fill-current" />
-        </div>
-        <span className="text-[10px] tracking-tight">Spotlight</span>
-      </Link>
-
-      {/* 3. Create Action (+) */}
-      <Link
-        href="/dashboard"
-        aria-label="Create event"
-        className="relative -top-4 w-[52px] h-[52px] rounded-full bg-[#E22765] hover:bg-[#C81E57] text-white flex items-center justify-center shadow-lg shadow-[#E22765]/25 transition active:scale-95"
-      >
-        <PlusIcon size={24} className="stroke-[2.5]" />
-      </Link>
-
-      {/* 4. My places */}
-      <Link
-        href="/places"
-        className={`flex flex-col items-center justify-center gap-1 w-14 py-1 transition-colors ${
-          isPlaces ? "text-[#E22765] font-bold" : "text-[#68788A] hover:text-[#172B3A]"
-        }`}
-      >
-        <MapPinIcon size={20} className={isPlaces ? "text-[#E22765] stroke-[2.2]" : "text-[#68788A]"} />
-        <span className="text-[10px] tracking-tight">My places</span>
-      </Link>
-
-      {/* 5. My events */}
-      <Link
-        href="/events"
-        className={`flex flex-col items-center justify-center gap-1 w-14 py-1 transition-colors ${
-          isEvents ? "text-[#E22765] font-bold" : "text-[#68788A] hover:text-[#172B3A]"
-        }`}
-      >
-        <TicketIcon size={20} className={isEvents ? "text-[#E22765] stroke-[2.2]" : "text-[#68788A]"} />
-        <span className="text-[10px] tracking-tight">My events</span>
-      </Link>
+    <>
+    <nav
+      aria-label="Main"
+      className="fixed bottom-4 left-1/2 z-50 grid h-[68px] w-[calc(100%-32px)] max-w-[358px] -translate-x-1/2 grid-cols-5 items-center rounded-full bg-white px-2 shadow-[0_4px_16px_rgba(23,43,58,0.10)]"
+    >
+      {tabs.map((tab) =>
+        tab === null ? (
+          <button
+            key="create"
+            type="button"
+            onClick={() => setCreateOpen(true)}
+            aria-label="Create"
+            aria-haspopup="dialog"
+            className="flex h-[52px] w-[52px] items-center justify-center justify-self-center rounded-full bg-[#E22765] shadow-[0_4px_16px_rgba(23,43,58,0.10)]"
+          >
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+              <path d="M13 5.4165V12.9998M13 12.9998V20.5832M13 12.9998H5.41666M13 12.9998H20.5833" stroke="white" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        ) : (
+          <Link key={tab.label} href={tab.href} className="flex flex-col items-center gap-1 justify-self-center" aria-current={tab.active ? "page" : undefined}>
+            <span className="flex h-6 w-6 items-center justify-center">{tab.icon}</span>
+            <span className={`whitespace-nowrap text-[10px] leading-3 ${tab.active ? "text-[#C81E57]" : "text-[#4D5E70]"}`}>{tab.label}</span>
+          </Link>
+        )
+      )}
     </nav>
+    <CreateSheet open={createOpen} onClose={() => setCreateOpen(false)} />
+    </>
   );
 }
